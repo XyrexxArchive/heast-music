@@ -32,10 +32,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(System.getenv("KURO_KEYSTORE_FILE") ?: "missing-release.keystore")
-            storePassword = System.getenv("KURO_STORE_PASSWORD")
-            keyAlias = System.getenv("KURO_KEY_ALIAS")
-            keyPassword = System.getenv("KURO_KEY_PASSWORD")
+            storeFile = file(System.getenv("HEAST_KEYSTORE_FILE") ?: "missing-release.keystore")
+            storePassword = System.getenv("HEAST_STORE_PASSWORD")
+            keyAlias = System.getenv("HEAST_KEY_ALIAS")
+            keyPassword = System.getenv("HEAST_KEY_PASSWORD")
         }
     }
 
