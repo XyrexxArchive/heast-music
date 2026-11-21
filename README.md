@@ -67,7 +67,14 @@ APK output: `app/build/outputs/apk/`.
 
 ## GitHub Actions
 
-The workflow in `.github/workflows/build-apk.yml` builds the native core and Android APKs. Release signing uses the existing repository secrets: `KURO_KEYSTORE_BASE64`, `KURO_STORE_PASSWORD`, `KURO_KEY_ALIAS` and `KURO_KEY_PASSWORD`. Keep these secret names if using the included workflow.
+The workflow in `.github/workflows/build-apk.yml` builds the native core and Android APKs. Release signing uses these repository secrets: `HEAST_KEYSTORE_BASE64`, `HEAST_STORE_PASSWORD`, `HEAST_KEY_ALIAS` and `HEAST_KEY_PASSWORD`.
+
+Generate the Base64 value from your release keystore:
+
+- Linux: `base64 -w 0 heast-release.jks`
+- macOS: `base64 heast-release.jks | tr -d '\n'`
+
+Save the output as `HEAST_KEYSTORE_BASE64`. Use the same keystore for future releases so users can install updates over previous versions.
 
 ## Credits
 
