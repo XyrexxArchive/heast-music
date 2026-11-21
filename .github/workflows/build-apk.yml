@@ -17,11 +17,11 @@ jobs:
       contents: write
 
     env:
-      KURO_KEYSTORE_BASE64: ${{ secrets.KURO_KEYSTORE_BASE64 }}
-      KURO_STORE_PASSWORD: ${{ secrets.KURO_STORE_PASSWORD }}
-      KURO_KEY_ALIAS: ${{ secrets.KURO_KEY_ALIAS }}
-      KURO_KEY_PASSWORD: ${{ secrets.KURO_KEY_PASSWORD }}
-      KURO_KEYSTORE_FILE: ${{ github.workspace }}/app/release.keystore
+      HEAST_KEYSTORE_BASE64: ${{ secrets.HEAST_KEYSTORE_BASE64 }}
+      HEAST_STORE_PASSWORD: ${{ secrets.HEAST_STORE_PASSWORD }}
+      HEAST_KEY_ALIAS: ${{ secrets.HEAST_KEY_ALIAS }}
+      HEAST_KEY_PASSWORD: ${{ secrets.HEAST_KEY_PASSWORD }}
+      HEAST_KEYSTORE_FILE: ${{ github.workspace }}/app/release.keystore
 
     steps:
       - name: Checkout Repository
@@ -41,12 +41,12 @@ jobs:
 
       - name: Validate signing secrets and decode keystore
         run: |
-          test -n "$KURO_KEYSTORE_BASE64" || { echo "Missing KURO_KEYSTORE_BASE64 secret"; exit 1; }
-          test -n "$KURO_STORE_PASSWORD" || { echo "Missing KURO_STORE_PASSWORD secret"; exit 1; }
-          test -n "$KURO_KEY_ALIAS" || { echo "Missing KURO_KEY_ALIAS secret"; exit 1; }
-          test -n "$KURO_KEY_PASSWORD" || { echo "Missing KURO_KEY_PASSWORD secret"; exit 1; }
-          printf '%s' "$KURO_KEYSTORE_BASE64" | base64 --decode > "$KURO_KEYSTORE_FILE"
-          test -s "$KURO_KEYSTORE_FILE"
+          test -n "$HEAST_KEYSTORE_BASE64" || { echo "Missing HEAST_KEYSTORE_BASE64 secret"; exit 1; }
+          test -n "$HEAST_STORE_PASSWORD" || { echo "Missing HEAST_STORE_PASSWORD secret"; exit 1; }
+          test -n "$HEAST_KEY_ALIAS" || { echo "Missing HEAST_KEY_ALIAS secret"; exit 1; }
+          test -n "$HEAST_KEY_PASSWORD" || { echo "Missing HEAST_KEY_PASSWORD secret"; exit 1; }
+          printf '%s' "$HEAST_KEYSTORE_BASE64" | base64 --decode > "$HEAST_KEYSTORE_FILE"
+          test -s "$HEAST_KEYSTORE_FILE"
 
       - name: Set up Rust Toolchain and Targets
         uses: dtolnay/rust-toolchain@stable
@@ -132,14 +132,14 @@ jobs:
             "${{ steps.apk.outputs.arm64_path }}" \
             "${{ steps.apk.outputs.arm32_path }}" \
             "${{ steps.apk.outputs.debug_path }}" \
-            --title "Kuro $RELEASE_TAG (Offline Playback, Critical Fixes & Performance)" \
+            --title "Heast Music $RELEASE_TAG (Offline Playback, Critical Fixes & Performance)" \
             --notes-file RELEASE_NOTES.md \
             --latest
 
       - name: Upload APK build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Kuro-${{ steps.apk.outputs.version }}-APKs
+          name: Heast-Music-${{ steps.apk.outputs.version }}-APKs
           path: |
             ${{ steps.apk.outputs.release_path }}
             ${{ steps.apk.outputs.arm64_path }}
