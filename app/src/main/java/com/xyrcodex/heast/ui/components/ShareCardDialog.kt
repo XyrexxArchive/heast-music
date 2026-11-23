@@ -74,7 +74,6 @@ fun ShareCardDialog(
     var template by remember { mutableStateOf(ShareCardTemplate.POSTER) }
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     var busy by remember { mutableStateOf(false) }
-    var pendingSave by remember { mutableStateOf(false) }
 
     fun createCard(save: Boolean) {
         if (busy) return
@@ -95,7 +94,6 @@ fun ShareCardDialog(
                 Toast.makeText(context, "Gagal membuat share card: ${error.message ?: "unknown error"}", Toast.LENGTH_LONG).show()
             } finally {
                 busy = false
-                pendingSave = false
             }
         }
     }
@@ -152,7 +150,6 @@ fun ShareCardDialog(
                         if (Build.VERSION.SDK_INT < 29 &&
                             ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                         ) {
-                            pendingSave = true
                             permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         } else createCard(true)
                     }
@@ -270,12 +267,19 @@ private object ShareCardRenderer {
 
     fun save(context: Context, bitmap: Bitmap): Uri {
         val filename = "Heast-${SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(Date())}.jpg"
+        val legacyDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Heast-Music")
+        if (Build.VERSION.SDK_INT < 29 && !legacyDirectory.exists() && !legacyDirectory.mkdirs()) {
+            error("Tidak dapat membuat folder Pictures/Heast-Music")
+        }
+        val legacyFile = File(legacyDirectory, filename)
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, filename)
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
             if (Build.VERSION.SDK_INT >= 29) {
                 put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Heast-Music")
                 put(MediaStore.Images.Media.IS_PENDING, 1)
+            } else {
+                put(MediaStore.Images.Media.DATA, legacyFile.absolutePath)
             }
         }
         val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
