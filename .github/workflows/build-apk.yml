@@ -1,4 +1,4 @@
-name: Heast Music v4.0.0 Build
+name: Heast Music v4.0.1 Build
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Rebrand repository to Heast v4.0.0
+      - name: Prepare Heast v4.0.1 release
         run: |
           if [ -f scripts/rebrand-v4.py ]; then
             python3 scripts/rebrand-v4.py
@@ -128,9 +128,10 @@ jobs:
           cat > RELEASE_NOTES.md <<EOF
           ## Heast Music v$VERSION_NAME
 
-          - Native Android music backend based on YouTube Music InnerTube.
-          - Native search, suggestions, home shelves, playlists, radio and stream resolution.
-          - LRCLIB synced and plain lyrics with the existing translation and cache pipeline.
+          - Share cards with Poster and Lyrics templates, gallery saving and direct sharing.
+          - GitHub update checker points to XyrexxArchive/heast-music releases.
+          - Native YouTube Music search, playback, recommendations and synced lyrics.
+          - UI, cache and playback stability improvements.
           - Release APK signed automatically with the Android debug signing configuration.
           - No repository signing secrets are required.
           
