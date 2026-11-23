@@ -169,7 +169,7 @@ expected_urls = {
     "app/src/main/java/com/xyrcodex/heast/data/model/Track.kt": 'if (u.startsWith("//"))',
     "app/src/main/java/com/xyrcodex/heast/data/remote/MusicRepository.kt": 'if (u.startsWith("//"))',
     "app/src/main/java/com/xyrcodex/heast/data/remote/MusicRepository.kt": "https://music.youtube.com",
-    "app/src/main/java/com/xyrcodex/heast/data/update/UpdateManager.kt": "https://api.github.com/repos/xyrcodexiyo/heast/releases/latest",
+    "app/src/main/java/com/xyrcodex/heast/data/update/UpdateManager.kt": "https://api.github.com/repos/XyrexxArchive/heast-music/releases/latest",
     "heast-core/src/innertube.rs": 'if u.starts_with("//")',
     "heast-core/src/translator.rs": "https://oneshot.fal.free.deepl.com/v1/translate",
 }
