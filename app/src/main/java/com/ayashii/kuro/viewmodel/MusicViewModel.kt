@@ -446,7 +446,7 @@ class MusicViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 delay(1800L)
-                val radioTracks = repository.getRadioTracks(track.id)
+                val radioTracks = repository.getUpNextTracks(track.id)
                 if (radioTracks.isNotEmpty()) {
                     _relatedTracks.value = radioTracks
                     val remaining = queueManager.queueState.value.size - queueManager.currentIndex.value
