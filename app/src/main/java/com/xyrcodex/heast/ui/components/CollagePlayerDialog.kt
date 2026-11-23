@@ -159,7 +159,7 @@ fun CollagePlayerDialog(
                         }
                         if (selectedTracks.size > 2) {
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-                                selectedTracks.drop(2).take(4).forEach { track -> CollagePreviewCard(track, -rotation * 0.55f, Modifier.weight(1f)) }
+                                selectedTracks.drop(2).take(2).forEach { track -> CollagePreviewCard(track, -rotation * 0.55f, Modifier.weight(1f)) }
                             }
                         }
                     }
