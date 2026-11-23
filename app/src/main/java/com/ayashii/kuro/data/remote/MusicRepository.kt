@@ -24,7 +24,7 @@ data class ResolvedStream(
     val mimeType: String? = null
 )
 
-class MusicRepository {
+class SonaraNativeBackend {
 
     private val service = ServiceList.YouTube
     private val CACHE_EXPIRY_MS = 20 * 60 * 1000L
@@ -67,11 +67,11 @@ class MusicRepository {
         private var cachedVisitorData: String? = null
 
         @Volatile
-        private var INSTANCE: MusicRepository? = null
+        private var INSTANCE: SonaraNativeBackend? = null
 
-        fun getInstance(): MusicRepository {
+        fun getInstance(): SonaraNativeBackend {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: MusicRepository().also { INSTANCE = it }
+                INSTANCE ?: SonaraNativeBackend().also { INSTANCE = it }
             }
         }
     }
@@ -2864,3 +2864,5 @@ class MusicRepository {
         }
     }
 }
+
+typealias MusicRepository = SonaraNativeBackend
