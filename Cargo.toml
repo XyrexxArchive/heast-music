@@ -1,5 +1,5 @@
 [workspace]
 members = [
-    "kuro-core",
+    "heast-core",
 ]
 resolver = "2"

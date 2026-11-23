@@ -4,15 +4,15 @@ plugins {
 }
 
 android {
-    namespace = "com.ayashii.kuro"
+    namespace = "com.xyrcodex.heast"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.ayashii.kuro"
+        applicationId = "com.xyrcodex.heast"
         minSdk = 26
         targetSdk = 34
-        versionCode = 68
-        versionName = "3.9.8"
+        versionCode = 69
+        versionName = "4.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

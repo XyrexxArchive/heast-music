@@ -4,9 +4,9 @@
 
 # Heast Music
 
-**Music, without the noise.**
+**Music for your moment.**
 
-A lightweight Android music player with a focused dark interface, built with Kotlin, Jetpack Compose and AndroidX Media3.
+A lightweight Android music player with an OLED-black interface, lime accents, Kotlin and Jetpack Compose.
 
 **Developer · xyrcodex**
 
@@ -18,67 +18,31 @@ A lightweight Android music player with a focused dark interface, built with Kot
 
 ## About
 
-Heast Music is a dark-first music player focused on fast navigation, clear typography and restrained visual detail. The interface uses a near-black graphite base with a soft lime signal accent, flat surfaces and compact controls to keep visual overhead low on entry-level Android devices.
+Heast Music is a lightweight Android music player focused on music discovery, smooth playback and a personal music library.
 
 ## Features
 
-- Native Kotlin YouTube Music backend ported from the Sonara backend flow
-- Music search, search suggestions, home recommendations, explore and trending shelves
-- Native stream resolution with Media3 playback, queue controls and background playback
-- Synced and plain lyrics through LRCLIB, plus the existing translation and disk-cache pipeline
-- Favorites, playlists, listening history and local recommendations
-- Offline downloads and home-screen playback widgets
-- Audio output detection, sleep timer and configurable quality
-- Dark, light and system theme options
+- YouTube Music search, discovery, suggestions and recommendations
+- Background playback, queue management and radio mix
+- Synced lyrics, plain lyrics and translation
+- Personalized home shelves, moods and discovery
+- Favorites, playlists and listening history
+- Offline downloads and playback controls
+- Home-screen widgets and media notifications
+- Sleep timer and audio output selection
+- OLED-black theme with soft lime accents
+- Lightweight image loading and caching
 
-## Tech stack
+## Technology
 
-- Kotlin + Jetpack Compose
-- AndroidX Media3 / ExoPlayer
-- Native YouTube Music InnerTube client (Kotlin + OkHttp)
-- NewPipeExtractor for native audio stream extraction
-- Coroutines, StateFlow and Coil
-- Rust native core
-
-## Requirements
-
-- Android Studio with JDK 17
-- Android SDK 34
-- Rust stable and `cargo-ndk` for the native core
-- Android NDK installed through SDK Manager
-
-## Build locally
-
-```bash
-git clone https://github.com/USERNAME/REPOSITORY.git
-cd REPOSITORY
-chmod +x ./gradlew
-cargo install cargo-ndk
-./gradlew assembleDebug
-```
-
-For a complete release build including the Rust libraries, install the Rust Android targets and run:
-
-```bash
-rustup target add aarch64-linux-android armv7-linux-androideabi
-cargo ndk -t arm64-v8a -t armeabi-v7a -o app/src/main/jniLibs build --release --manifest-path kuro-core/Cargo.toml
-./gradlew assembleRelease
-```
-
-APK output: `app/build/outputs/apk/`.
-
-## GitHub Actions
-
-The workflow in `.github/workflows/build-apk.yml` builds the Rust native core and Android APKs. It does not require repository secrets or a manually uploaded keystore. The release variant uses Android's automatically generated debug signing configuration so the APK can be installed directly.
-
-Because GitHub-hosted runners may generate a different debug certificate on a later run, Android can reject an update over an APK signed by a previous run. If that happens, uninstall the old Heast Music build before installing the new one. For stable in-place updates and Play Store distribution, use a persistent private release keystore.
+Kotlin, Jetpack Compose, AndroidX Media3, OkHttp, NewPipeExtractor, Coil, Coroutines and Rust.
 
 ## Credits
 
-- [NewPipeExtractor](https://github.com/TeamNewPipe/NewPipeExtractor) by Team NewPipe and contributors.
-- [AndroidX Media3](https://developer.android.com/media/media3).
-- [Jetpack Compose](https://developer.android.com/compose).
+- [NewPipeExtractor](https://github.com/TeamNewPipe/NewPipeExtractor)
+- [AndroidX Media3](https://developer.android.com/media/media3)
+- [Jetpack Compose](https://developer.android.com/compose)
 
 ## License
 
-This project is distributed under the GNU General Public License v3.0 (GPL-3.0).
+GNU General Public License v3.0 (GPL-3.0).
