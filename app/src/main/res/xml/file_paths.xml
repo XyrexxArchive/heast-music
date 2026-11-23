@@ -10,4 +10,5 @@
     <external-path
         name="external_downloads"
         path="Download" />
+    <cache-path name="share_cards" path="share/" />
 </paths>
