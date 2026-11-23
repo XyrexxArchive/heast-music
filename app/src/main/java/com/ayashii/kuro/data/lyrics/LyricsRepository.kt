@@ -185,7 +185,7 @@ class LyricsRepository(private val context: Context) {
             val verifiedEmpty = fetchResult is LyricsFetchResult.Empty || fetchResult is LyricsFetchResult.Success
             val hadNetworkError = fetchResult is LyricsFetchResult.Error
 
-            if (!hadNetworkError && liriqoVerifiedEmpty) {
+            if (!hadNetworkError && verifiedEmpty) {
                 synchronized(negativeCache) { negativeCache.put(trackId, System.currentTimeMillis()) }
                 try {
                     emptyMarker.createNewFile()
@@ -323,7 +323,7 @@ class LyricsRepository(private val context: Context) {
             .applyAuthToRequest(builder, payload, origin)
         return httpClient.newCall(builder.build()).execute().use { response ->
             if (!response.isSuccessful) null
-            else response.body?.string()?.let(::JSONObject)
+            else response.body?.string()?.let { JSONObject(it) }
         }
     }
 
