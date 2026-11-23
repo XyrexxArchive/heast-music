@@ -1,4 +1,4 @@
-name: Heast Music v4.0.2 Build
+name: Heast Music v4.0.3 Build
 
 on:
   push:
@@ -114,7 +114,9 @@ jobs:
           cat > RELEASE_NOTES.md <<EOF
           ## Heast Music v$VERSION_NAME
 
-          - Collage Player editor with photo picker, selectable tracks, layouts, rotation and Heast watermark.
+          - Dynamic Island-style in-app playback pill with quick controls.
+          - Synced Lyrics UI and playback-following highlight.
+          - Collage Player up to five tracks, background position/blur and playback controls.
           - Export collage posters to Pictures/Heast-Music.
           - GitHub update checker points to XyrexxArchive/heast-music releases.
           - Native YouTube Music search, playback, recommendations and synced lyrics.
