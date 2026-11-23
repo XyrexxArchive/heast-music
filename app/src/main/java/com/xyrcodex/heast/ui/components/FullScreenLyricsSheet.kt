@@ -124,6 +124,7 @@ fun FullScreenLyricsSheet(
     val settingsManager = remember { SettingsManager.getInstance() }
     val currentLyricsLanguage by settingsManager.lyricsLanguage.collectAsState()
     var showTranslation by remember { mutableStateOf(true) }
+    var showShareCard by remember { mutableStateOf(false) }
     var showLangPickerDialog by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val isUserDragging by listState.interactionSource.collectIsDraggedAsState()
@@ -371,24 +372,7 @@ fun FullScreenLyricsSheet(
                     }
 
                     IconButton(
-                        onClick = {
-                            try {
-                                val shareText = if (sanitizedLyrics != null && sanitizedLyrics.lines.isNotEmpty()) {
-                                    val snippet = sanitizedLyrics.lines.take(8).joinToString("\n") { it.text }
-                                    "${track.title} - ${track.artist}\n\n$snippet\n\n${track.url}"
-                                } else {
-                                    "${track.title} - ${track.artist}: ${track.url}"
-                                }
-                                val intent = Intent(Intent.ACTION_SEND).apply {
-                                    putExtra(Intent.EXTRA_TEXT, shareText)
-                                    type = "text/plain"
-                                }
-                                val chooser = Intent.createChooser(intent, "Bagikan Lirik").apply {
-                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                }
-                                context.startActivity(chooser)
-                            } catch (_: Exception) {}
-                        },
+                        onClick = { showShareCard = true },
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
@@ -581,6 +565,14 @@ fun FullScreenLyricsSheet(
                 onPlayPauseClick = onPlayPauseClick
             )
         }
+    }
+
+    if (showShareCard) {
+        ShareCardDialog(
+            track = track,
+            lyrics = sanitizedLyrics?.lines?.map { it.text }.orEmpty(),
+            onDismiss = { showShareCard = false }
+        )
     }
 
     if (showLangPickerDialog) {
