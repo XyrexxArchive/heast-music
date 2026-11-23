@@ -33,6 +33,9 @@ Heast Music is a lightweight Android music player focused on music discovery, sm
 - OLED-black theme with soft lime accents
 - Lightweight image loading and caching
 
+- Poster and lyrics share-card templates with gallery export to Pictures/Heast-Music.
+- In-app GitHub release update checker.
+
 ## Technology
 
 Kotlin, Jetpack Compose, AndroidX Media3, OkHttp, NewPipeExtractor, Coil, Coroutines and Rust.
