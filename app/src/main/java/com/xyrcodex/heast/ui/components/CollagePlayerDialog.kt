@@ -42,6 +42,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddPhotoAlternate
 import androidx.compose.material.icons.outlined.Collections
 import androidx.compose.material.icons.outlined.SaveAlt
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -76,6 +82,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import com.xyrcodex.heast.data.model.Track
+import com.xyrcodex.heast.viewmodel.MusicViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -88,13 +95,14 @@ import java.util.Date
 import java.util.Locale
 
 private enum class CollageLayout(val label: String, val count: Int) {
-    FEATURED("Featured", 2), GRID("Grid", 4), WALL("Wall", 6)
+    FEATURED("Featured", 2), GRID("Grid", 4), WALL("Wall", 5)
 }
 
 @Composable
 fun CollagePlayerDialog(
     currentTrack: Track,
     queue: List<Track>,
+    viewModel: MusicViewModel,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
@@ -105,6 +113,12 @@ fun CollagePlayerDialog(
     val selectedIds = remember(currentTrack.id) { mutableStateListOf(currentTrack.id) }
     var layout by remember { mutableStateOf(CollageLayout.GRID) }
     var rotation by remember { mutableFloatStateOf(8f) }
+    var backgroundX by remember { mutableFloatStateOf(0f) }
+    var backgroundY by remember { mutableFloatStateOf(0f) }
+    var backgroundBlur by remember { mutableFloatStateOf(0f) }
+    val isPlaying by viewModel.isPlaying.collectAsState()
+    val playbackPosition by viewModel.playbackPosition.collectAsState()
+    val duration by viewModel.duration.collectAsState()
     var backgroundUri by remember { mutableStateOf<Uri?>(null) }
     var watermark by remember { mutableStateOf("HEAST MUSIC") }
     var showWatermark by remember { mutableStateOf(true) }
@@ -122,7 +136,7 @@ fun CollagePlayerDialog(
             scope.launch {
                 try {
                     withContext(Dispatchers.IO) {
-                        CollageRenderer.save(context, availableTracks.filter { selectedIds.contains(it.id) }.ifEmpty { listOf(currentTrack) }.take(layout.count), backgroundUri, rotation, layout, watermark.takeIf { showWatermark })
+                        CollageRenderer.save(context, availableTracks.filter { selectedIds.contains(it.id) }.ifEmpty { listOf(currentTrack) }.take(minOf(layout.count, 5)), backgroundUri, rotation, layout, watermark.takeIf { showWatermark }, backgroundX, backgroundY, backgroundBlur, playbackPosition, duration, isPlaying)
                     }
                     Toast.makeText(context, "Collage tersimpan di Pictures/Heast-Music", Toast.LENGTH_LONG).show()
                 } catch (e: Exception) {
@@ -132,7 +146,7 @@ fun CollagePlayerDialog(
         } else Toast.makeText(context, "Izin penyimpanan ditolak", Toast.LENGTH_SHORT).show()
     }
 
-    val selectedTracks = availableTracks.filter { selectedIds.contains(it.id) }.take(layout.count).ifEmpty { listOf(currentTrack) }
+    val selectedTracks = availableTracks.filter { selectedIds.contains(it.id) }.take(minOf(layout.count, 5)).ifEmpty { listOf(currentTrack) }
 
     AlertDialog(
         onDismissRequest = { if (!busy) onDismiss() },
@@ -148,7 +162,7 @@ fun CollagePlayerDialog(
                         .background(Color(0xFF101713)).border(1.dp, Color(0xFF344239), RoundedCornerShape(18.dp))
                 ) {
                     if (backgroundUri != null) {
-                        AsyncImage(model = backgroundUri, contentDescription = null, modifier = Modifier.matchParentSize(), contentScale = ContentScale.Crop)
+                        AsyncImage(model = backgroundUri, contentDescription = null, modifier = Modifier.matchParentSize().graphicsLayer { scaleX = 1.45f; scaleY = 1.45f; translationX = backgroundX * 70f; translationY = backgroundY * 70f }, contentScale = ContentScale.Crop)
                         Box(Modifier.matchParentSize().background(Color.Black.copy(alpha = 0.48f)))
                     }
                     Column(Modifier.align(Alignment.Center).padding(12.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
@@ -175,6 +189,18 @@ fun CollagePlayerDialog(
                 }
                 Text("Rotasi kartu · ${rotation.toInt()}°", style = MaterialTheme.typography.labelLarge)
                 Slider(value = rotation, onValueChange = { rotation = it }, valueRange = 0f..24f)
+                Text("Posisi background horizontal · ${(backgroundX * 100).toInt()}%", style = MaterialTheme.typography.labelMedium)
+                Slider(value = backgroundX, onValueChange = { backgroundX = it }, valueRange = -1f..1f)
+                Text("Posisi background vertikal · ${(backgroundY * 100).toInt()}%", style = MaterialTheme.typography.labelMedium)
+                Slider(value = backgroundY, onValueChange = { backgroundY = it }, valueRange = -1f..1f)
+                Text("Blur background · ${backgroundBlur.toInt()} px", style = MaterialTheme.typography.labelMedium)
+                Slider(value = backgroundBlur, onValueChange = { backgroundBlur = it }, valueRange = 0f..24f)
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { viewModel.skipPrevious() }) { Icon(Icons.Filled.SkipPrevious, "Previous") }
+                    IconButton(onClick = { viewModel.togglePlayPause() }) { Icon(if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow, "Play/Pause") }
+                    IconButton(onClick = { viewModel.skipNext() }) { Icon(Icons.Filled.SkipNext, "Next") }
+                    Text("${formatCollageTime(playbackPosition)} / ${formatCollageTime(duration)}", style = MaterialTheme.typography.labelSmall)
+                }
                 Text("Foto latar", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     Button(onClick = { photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFBEF570), contentColor = Color.Black)) {
@@ -185,19 +211,19 @@ fun CollagePlayerDialog(
                     Text(if (backgroundUri == null) "Pakai latar bawaan" else "Foto dipilih", color = Color.Gray, style = MaterialTheme.typography.bodySmall)
                     if (backgroundUri != null) TextButton(onClick = { backgroundUri = null }) { Text("Hapus") }
                 }
-                Text("Pilih lagu · maksimal ${layout.count}", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+                Text("Pilih lagu · maksimal 5", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                 availableTracks.forEach { track ->
                     val checked = selectedIds.contains(track.id)
                     Row(
                         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).clickable {
                             if (checked) {
                                 if (selectedIds.size > 1) selectedIds.remove(track.id)
-                            } else if (selectedIds.size < layout.count) selectedIds.add(track.id)
+                            } else if (selectedIds.size < minOf(layout.count, 5)) selectedIds.add(track.id)
                         }.padding(vertical = 3.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(checked = checked, onCheckedChange = {
-                            if (it && selectedIds.size < layout.count) selectedIds.add(track.id)
+                            if (it && selectedIds.size < minOf(layout.count, 5)) selectedIds.add(track.id)
                             else if (!it && selectedIds.size > 1) selectedIds.remove(track.id)
                         })
                         AsyncImage(model = track.thumbnailUrlForDisplay(144), contentDescription = null, modifier = Modifier.size(42.dp).clip(RoundedCornerShape(8.dp)), contentScale = ContentScale.Crop)
@@ -224,7 +250,7 @@ fun CollagePlayerDialog(
                         scope.launch {
                             try {
                                 withContext(Dispatchers.IO) {
-                                    CollageRenderer.save(context, selectedTracks, backgroundUri, rotation, layout, watermark.takeIf { showWatermark })
+                                    CollageRenderer.save(context, selectedTracks, backgroundUri, rotation, layout, watermark.takeIf { showWatermark }, backgroundX, backgroundY, backgroundBlur, playbackPosition, duration, isPlaying)
                                 }
                                 Toast.makeText(context, "Collage tersimpan di Pictures/Heast-Music", Toast.LENGTH_LONG).show()
                             } catch (e: Exception) {
@@ -261,21 +287,39 @@ private fun CollagePreviewCard(track: Track, angle: Float, modifier: Modifier = 
     }
 }
 
+private fun formatCollageTime(ms: Long): String {
+    val total = (ms.coerceAtLeast(0L) / 1000L)
+    return String.format(Locale.US, "%02d:%02d", total / 60L, total % 60L)
+}
+
+private fun blurBitmap(source: Bitmap, radius: Float): Bitmap {
+    val factor = (radius / 24f).coerceIn(0f, 1f)
+    if (factor <= 0f) return source
+    val width = (source.width * (1f - factor * 0.88f)).toInt().coerceAtLeast(24)
+    val height = (source.height * (1f - factor * 0.88f)).toInt().coerceAtLeast(24)
+    val small = Bitmap.createScaledBitmap(source, width, height, true)
+    return Bitmap.createScaledBitmap(small, source.width, source.height, true).also { small.recycle() }
+}
+
 private object CollageRenderer {
     private const val W = 1440
     private const val H = 1920
 
-    fun save(context: Context, tracks: List<Track>, photo: Uri?, rotation: Float, layout: CollageLayout, watermark: String?) {
+    fun save(context: Context, tracks: List<Track>, photo: Uri?, rotation: Float, layout: CollageLayout, watermark: String?, backgroundX: Float, backgroundY: Float, blur: Float, progressMs: Long, durationMs: Long, isPlaying: Boolean) {
         require(tracks.isNotEmpty()) { "Pilih minimal satu lagu" }
         val background = photo?.let { uri -> context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) } }
         val bitmap = Bitmap.createBitmap(W, H, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
         if (background != null) {
-            val scale = maxOf(W.toFloat() / background.width, H.toFloat() / background.height)
-            val bw = background.width * scale
-            val bh = background.height * scale
-            canvas.drawBitmap(background, null, RectF((W-bw)/2, (H-bh)/2, (W+bw)/2, (H+bh)/2), paint)
+            val source = if (blur > 0f) blurBitmap(background, blur) else background
+            val scale = maxOf(W.toFloat() / source.width, H.toFloat() / source.height) * 1.35f
+            val bw = source.width * scale
+            val bh = source.height * scale
+            val left = (W-bw)/2f + backgroundX * W * 0.22f
+            val top = (H-bh)/2f + backgroundY * H * 0.22f
+            canvas.drawBitmap(source, null, RectF(left, top, left+bw, top+bh), paint)
+            if (source !== background) source.recycle()
             background.recycle()
             paint.color = AndroidColor.argb(115, 0, 0, 0)
             canvas.drawRect(0f, 0f, W.toFloat(), H.toFloat(), paint)
@@ -286,11 +330,11 @@ private object CollageRenderer {
             paint.shader = null
         }
 
-        val count = minOf(tracks.size, layout.count)
+        val count = minOf(tracks.size, layout.count, 5)
         val positions = when (layout) {
             CollageLayout.FEATURED -> listOf(RectF(170f, 300f, 750f, 1040f), RectF(690f, 770f, 1270f, 1510f))
             CollageLayout.GRID -> listOf(RectF(90f, 300f, 680f, 900f), RectF(760f, 300f, 1350f, 900f), RectF(90f, 1010f, 680f, 1610f), RectF(760f, 1010f, 1350f, 1610f))
-            CollageLayout.WALL -> listOf(RectF(55f, 260f, 470f, 780f), RectF(510f, 210f, 925f, 730f), RectF(965f, 260f, 1380f, 780f), RectF(55f, 920f, 470f, 1440f), RectF(510f, 970f, 925f, 1490f), RectF(965f, 920f, 1380f, 1440f))
+            CollageLayout.WALL -> listOf(RectF(70f, 260f, 500f, 800f), RectF(505f, 210f, 935f, 750f), RectF(940f, 260f, 1370f, 800f), RectF(250f, 940f, 680f, 1480f), RectF(760f, 940f, 1190f, 1480f))
         }
         tracks.take(count).forEachIndexed { index, track ->
             val rect = positions[index]
@@ -317,7 +361,22 @@ private object CollageRenderer {
             paint.textSize = 25f
             canvas.drawText(track.artist.take(30), rect.left + 22f, artRect.bottom + 98f, paint)
             paint.color = AndroidColor.rgb(190, 245, 112)
-            canvas.drawRoundRect(RectF(rect.left + 22f, rect.bottom - 38f, rect.right - 22f, rect.bottom - 27f), 8f, 8f, paint)
+            val progress = (progressMs.toFloat() / durationMs.coerceAtLeast(1L)).coerceIn(0f, 1f)
+            val bar = RectF(rect.left + 22f, rect.bottom - 118f, rect.right - 22f, rect.bottom - 108f)
+            paint.color = AndroidColor.argb(90, 255, 255, 255)
+            canvas.drawRoundRect(bar, 8f, 8f, paint)
+            paint.color = AndroidColor.rgb(190, 245, 112)
+            canvas.drawRoundRect(RectF(bar.left, bar.top, bar.left + bar.width() * progress, bar.bottom), 8f, 8f, paint)
+            paint.color = AndroidColor.WHITE
+            paint.textSize = 22f
+            paint.textAlign = Paint.Align.LEFT
+            canvas.drawText(formatCollageTime(progressMs), bar.left, bar.top - 18f, paint)
+            paint.textAlign = Paint.Align.RIGHT
+            canvas.drawText(formatCollageTime(durationMs), bar.right, bar.top - 18f, paint)
+            paint.textAlign = Paint.Align.CENTER
+            paint.textSize = 44f
+            canvas.drawText("◀   ${if (isPlaying) "Ⅱ" else "▶"}   ▶", rect.centerX(), rect.bottom - 45f, paint)
+            paint.textAlign = Paint.Align.LEFT
             canvas.restore()
         }
         watermark?.takeIf { it.isNotBlank() }?.let {
