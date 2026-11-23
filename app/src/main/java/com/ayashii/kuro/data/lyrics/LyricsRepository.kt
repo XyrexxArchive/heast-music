@@ -182,7 +182,7 @@ class LyricsRepository(private val context: Context) {
                 }
             }
         } else {
-            val liriqoVerifiedEmpty = fetchResult is LyricsFetchResult.Empty || fetchResult is LyricsFetchResult.Success
+            val verifiedEmpty = fetchResult is LyricsFetchResult.Empty || fetchResult is LyricsFetchResult.Success
             val hadNetworkError = fetchResult is LyricsFetchResult.Error
 
             if (!hadNetworkError && liriqoVerifiedEmpty) {
@@ -203,103 +203,6 @@ class LyricsRepository(private val context: Context) {
                 files.sortedBy { it.lastModified() }.take(files.size - 400).forEach { it.delete() }
             }
         } catch (_: Exception) {}
-    }
-
-    private fun cleanSearchTerm(term: String): String {
-        return term
-            .replace(Regex("""\((?:official|audio|video|lyric|lyrics|remastered|remaster|hd|4k|hq|visualizer|mv).*?\)""", RegexOption.IGNORE_CASE), "")
-            .replace(Regex("""\[(?:official|audio|video|lyric|lyrics|remastered|remaster|hd|4k|hq|visualizer|mv).*?\]""", RegexOption.IGNORE_CASE), "")
-            .replace(Regex("""feat\..*""", RegexOption.IGNORE_CASE), "")
-            .replace(Regex("""ft\..*""", RegexOption.IGNORE_CASE), "")
-            .replace(Regex("""\s+"""), " ")
-            .trim()
-    }
-
-    private fun fetchFromLrclib(
-        trackId: String,
-        title: String,
-        artist: String,
-        durationSeconds: Long
-    ): LyricsFetchResult {
-        if (title.isBlank() || artist.isBlank()) return LyricsFetchResult.Empty
-
-        return try {
-            val cleanTitle = title
-                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
-                .trim()
-            val cleanArtist = artist.split(Regex(""",|feat\.|ft\."""), limit = 2)
-                .firstOrNull()
-                .orEmpty()
-                .trim()
-            if (cleanTitle.isBlank() || cleanArtist.isBlank()) {
-                return LyricsFetchResult.Empty
-            }
-
-            val url = buildString {
-                append("https://lrclib.net/api/get?track_name=")
-                append(URLEncoder.encode(cleanTitle, "UTF-8"))
-                append("&artist_name=")
-                append(URLEncoder.encode(cleanArtist, "UTF-8"))
-                if (durationSeconds > 0L) {
-                    append("&duration=")
-                    append(durationSeconds)
-                }
-            }
-
-            val request = Request.Builder()
-                .url(url)
-                .header("User-Agent", "HeastMusic/1.0 (https://github.com/XyrexxArchive/heast-music)")
-                .header("Accept", "application/json")
-                .get()
-                .build()
-
-            val response = httpClient.newCall(request).execute()
-            val code = response.code
-            val body = response.body?.string()
-            response.close()
-
-            if (code == 404) return LyricsFetchResult.Empty
-            if (code !in 200..299 || body.isNullOrBlank()) {
-                return LyricsFetchResult.Error
-            }
-
-            val json = JSONObject(body)
-            val synced = json.optString("syncedLyrics").trim()
-            if (synced.isNotBlank()) {
-                val lines = LrcParser.sanitizeLines(LrcParser.parse(synced))
-                if (isValidLyricsLines(lines)) {
-                    return LyricsFetchResult.Success(
-                        LyricsData(
-                            trackId = trackId,
-                            title = title,
-                            artist = artist,
-                            lines = lines,
-                            isSynced = true
-                        )
-                    )
-                }
-            }
-
-            val plain = json.optString("plainLyrics").trim()
-            if (plain.isNotBlank()) {
-                val lines = LrcParser.sanitizeLines(LrcParser.parsePlain(plain))
-                if (isValidLyricsLines(lines)) {
-                    return LyricsFetchResult.Success(
-                        LyricsData(
-                            trackId = trackId,
-                            title = title,
-                            artist = artist,
-                            lines = lines,
-                            isSynced = false
-                        )
-                    )
-                }
-            }
-
-            LyricsFetchResult.Empty
-        } catch (_: Exception) {
-            LyricsFetchResult.Error
-        }
     }
 
     private fun fetchFromYouTubeMusic(
