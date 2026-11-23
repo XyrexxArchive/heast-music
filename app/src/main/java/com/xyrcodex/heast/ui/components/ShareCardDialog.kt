@@ -88,7 +88,7 @@ fun ShareCardDialog(
                     withContext(Dispatchers.IO) { ShareCardRenderer.save(context, result) }
                     Toast.makeText(context, "Tersimpan di Pictures/Heast-Music", Toast.LENGTH_LONG).show()
                 } else {
-                    withContext(Dispatchers.IO) { ShareCardRenderer.share(context, result, track.title) }
+                    ShareCardRenderer.share(context, result, track.title)
                 }
             } catch (error: Exception) {
                 Toast.makeText(context, "Gagal membuat share card: ${error.message ?: "unknown error"}", Toast.LENGTH_LONG).show()
