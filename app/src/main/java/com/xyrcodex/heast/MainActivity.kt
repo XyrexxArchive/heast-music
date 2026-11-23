@@ -39,6 +39,10 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.automirrored.filled.PlaylistPlay
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,6 +70,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import androidx.core.content.ContextCompat
 import com.xyrcodex.heast.data.model.Track
 import com.xyrcodex.heast.data.update.UpdateInfo
@@ -198,6 +203,7 @@ fun MainAppScreen(viewModel: MusicViewModel, onPageChanged: (Int) -> Unit = {}) 
     val currentTrack by viewModel.currentTrack.collectAsState()
     val isPlaying by viewModel.isPlaying.collectAsState()
     val isLoadingTrack by viewModel.isLoadingTrack.collectAsState()
+    val playbackPosition by viewModel.playbackPosition.collectAsState()
     val isExpanded by viewModel.isPlayerExpanded.collectAsState()
     val isShuffle by viewModel.isShuffle.collectAsState()
     val repeatMode by viewModel.repeatMode.collectAsState()
@@ -401,6 +407,48 @@ fun MainAppScreen(viewModel: MusicViewModel, onPageChanged: (Int) -> Unit = {}) 
                             )
                         }
                     }
+                }
+            }
+        }
+
+        AnimatedVisibility(
+            visible = currentTrack != null && !isExpanded,
+            modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 5.dp),
+            enter = fadeIn(tween(180)) + slideInVertically(tween(220)) { -it },
+            exit = fadeOut(tween(140))
+        ) {
+            currentTrack?.let { active ->
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(28.dp))
+                        .background(Color(0xF20B0E0C))
+                        .border(1.dp, Color(0xFF39443C), RoundedCornerShape(28.dp))
+                        .clickable { viewModel.expandPlayer(true) }
+                        .padding(start = 7.dp, end = 9.dp, top = 6.dp, bottom = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    AsyncImage(
+                        model = active.thumbnailUrlForDisplay(96),
+                        contentDescription = null,
+                        modifier = Modifier.size(34.dp).clip(CircleShape)
+                    )
+                    Column(modifier = Modifier.widthIn(max = 132.dp)) {
+                        Text(active.title, color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(active.artist, color = Color(0xFFB7C0B8), fontSize = 9.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
+                    Icon(
+                        imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                        contentDescription = "Play/Pause",
+                        tint = Color(0xFFBEF570),
+                        modifier = Modifier.size(23.dp).clickable { viewModel.togglePlayPause() }
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.SkipNext,
+                        contentDescription = "Next",
+                        tint = Color.White,
+                        modifier = Modifier.size(21.dp).clickable { viewModel.skipNext() }
+                    )
                 }
             }
         }
