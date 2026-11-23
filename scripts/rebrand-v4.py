@@ -37,7 +37,7 @@ for current, dirs, files in os.walk(ROOT, topdown=True):
                 if path.name == "SettingsManager.kt":
                     updated = re.sub(
                         r'private fun loadThemeMode\(\): ThemeMode \{.*?\n    \}',
-                        'private fun loadThemeMode(): ThemeMode {\\n        val name = prefs.getString(KEY_THEME_MODE, ThemeMode.DARK.name) ?: ThemeMode.DARK.name\n        return try {\\n            ThemeMode.valueOf(name)\\n        } catch (_: Exception) {\\n            ThemeMode.DARK\n        }\\n    }',
+                        'private fun loadThemeMode(): ThemeMode {\n        val name = prefs.getString(KEY_THEME_MODE, ThemeMode.DARK.name) ?: ThemeMode.DARK.name\n        return try {\n            ThemeMode.valueOf(name)\n        } catch (_: Exception) {\n            ThemeMode.DARK\n        }\n    }',
                         updated,
                         count=1,
                         flags=re.DOTALL
