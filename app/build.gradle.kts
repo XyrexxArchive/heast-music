@@ -11,8 +11,8 @@ android {
         applicationId = "com.xyrcodex.heast"
         minSdk = 26
         targetSdk = 34
-        versionCode = 69
-        versionName = "4.0.0"
+        versionCode = 70
+        versionName = "4.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
