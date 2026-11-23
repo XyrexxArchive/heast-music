@@ -1253,6 +1253,8 @@ class SonaraNativeBackend {
         } catch (_: Exception) {}
     }
 
+    suspend fun getUpNextTracks(videoId: String): List<Track> = getRadioTracks(videoId)
+
     suspend fun getExploreShelves(browseId: String): List<HomeSection> = withContext(Dispatchers.IO) {
         try {
             val json = postYtmBrowse(browseId, allowAnonymous = true) ?: return@withContext emptyList()
