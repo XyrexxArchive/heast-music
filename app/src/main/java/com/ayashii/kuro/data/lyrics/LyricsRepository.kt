@@ -204,11 +204,11 @@ class LyricsRepository(private val context: Context) {
 
     private fun cleanSearchTerm(term: String): String {
         return term
-            .replace(Regex("""\((?:official|audio|video|lyric|lyrics|remastered|remaster|hd|4k|hq|visualizer|mv).*?\)""", RegexOption.IGNORE_CASE), "")
-            .replace(Regex("""\[(?:official|audio|video|lyric|lyrics|remastered|remaster|hd|4k|hq|visualizer|mv).*?\]""", RegexOption.IGNORE_CASE), "")
-            .replace(Regex("""feat\..*""", RegexOption.IGNORE_CASE), "")
-            .replace(Regex("""ft\..*""", RegexOption.IGNORE_CASE), "")
-            .replace(Regex("""\s+"""), " ")
+                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
+                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
+                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
+                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
+                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
             .trim()
     }
 
@@ -222,9 +222,9 @@ class LyricsRepository(private val context: Context) {
 
         return try {
             val cleanTitle = title
-                .replace(Regex("""\\s*\\([^)]*\\)|\\s*\\[[^]]*\\]"""), "")
+                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
                 .trim()
-            val cleanArtist = artist.split(Regex(""",|feat\\.|ft\\."""), limit = 2)
+            val cleanArtist = artist.split(Regex(""",|feat\.|ft\."""), limit = 2)
                 .firstOrNull()
                 .orEmpty()
                 .trim()
