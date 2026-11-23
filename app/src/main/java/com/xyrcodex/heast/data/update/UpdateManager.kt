@@ -43,6 +43,7 @@ class UpdateManager private constructor(private val context: Context) {
 
     companion object {
         private const val TAG = "HeastUpdateManager"
+        private const val RELEASES_URL = "https://github.com/XyrexxArchive/heast-music/releases"
         private const val PREFS_NAME = "heast_update_prefs"
         private const val KEY_LAST_CHECK_TIME = "last_check_timestamp"
         private const val MIN_CHECK_INTERVAL_MS = 15 * 60 * 1000L
@@ -98,14 +99,14 @@ class UpdateManager private constructor(private val context: Context) {
         try {
             prefs.edit().putLong(KEY_LAST_CHECK_TIME, now).apply()
             val request = Request.Builder()
-                .url("https://api.github.com/repos/xyrcodexiyo/heast/releases/latest")
+                .url("https://api.github.com/repos/XyrexxArchive/heast-music/releases/latest")
                 .header("Accept", "application/vnd.github+json")
                 .header("User-Agent", "Heast-Android-App")
                 .build()
 
             val response = httpClient.newCall(request).execute()
             if (!response.isSuccessful) {
-                Log.w(TAG, "GitHub API returned ${response.code}")
+                Log.w(TAG, "GitHub API returned ${response.code}; releases: $RELEASES_URL")
                 response.close()
                 return@withContext null
             }
