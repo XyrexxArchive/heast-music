@@ -745,7 +745,7 @@ fun FullPlayerSheet(
                     item(key = "pill_lyrics") {
                         YtmActionPill(
                             icon = Icons.Outlined.Lyrics,
-                            label = stringResource(R.string.player_lyrics),
+                            label = "Synced Lyrics",
                             isActive = showFullScreenLyrics || topSwitchMode == 1,
                             onClick = { showFullScreenLyrics = true }
                         )
@@ -1108,6 +1108,7 @@ fun FullPlayerSheet(
         CollagePlayerDialog(
             currentTrack = track,
             queue = playerQueue,
+            viewModel = viewModel,
             onDismiss = { showCollagePlayer = false }
         )
     }
