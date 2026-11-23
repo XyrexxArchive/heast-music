@@ -30,20 +30,11 @@ android {
         }
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = file(System.getenv("HEAST_KEYSTORE_FILE") ?: "missing-release.keystore")
-            storePassword = System.getenv("HEAST_STORE_PASSWORD")
-            keyAlias = System.getenv("HEAST_KEY_ALIAS")
-            keyPassword = System.getenv("HEAST_KEY_PASSWORD")
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
