@@ -37,11 +37,11 @@ class SonaraNativeBackend {
         private const val YTM_CLIENT_VERSION = "1.20260401.01.00"
         private const val YTM_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
 
-        private const val YTM_PARAMS_SONGS = "EgWKAQIIAWoKEAkQBRAKEAMQBA=="
-        private const val YTM_PARAMS_VIDEOS = "EgWKAQJQAWoKEAkQBRAKEAMQBA=="
-        private const val YTM_PARAMS_ALBUMS = "EgWKAQIYAWoKEAkQBRAKEAMQBA=="
-        private const val YTM_PARAMS_ARTISTS = "EgWKAQIgAWoKEAkQBRAKEAMQBA=="
-        private const val YTM_PARAMS_PLAYLISTS = "EgWKAQIoAWoKEAkQBRAKEAMQBA=="
+        private const val YTM_PARAMS_SONGS = "Eg-KAQwIARAAGAAgACgAMABqChAEEAMQCRAFEAo="
+        private const val YTM_PARAMS_VIDEOS = "Eg-KAQwIABABGAAgACgAMABqChAEEAMQCRAFEAo="
+        private const val YTM_PARAMS_ALBUMS = "Eg-KAQwIABAAGAEgACgAMABqChAEEAMQCRAFEAo="
+        private const val YTM_PARAMS_ARTISTS = "Eg-KAQwIABAAGAAgASgAMABqChAEEAMQCRAFEAo="
+        private const val YTM_PARAMS_PLAYLISTS = "Eg-KAQwIABAAGAAgACgBMABqChAEEAMQCRAFEAo="
 
         private val THUMB_WH_CHECK_REGEX = Regex("=w\\d+-h\\d+")
         private val THUMB_WH_REGEX = Regex("=w\\d+-h\\d+[^&?]*")
