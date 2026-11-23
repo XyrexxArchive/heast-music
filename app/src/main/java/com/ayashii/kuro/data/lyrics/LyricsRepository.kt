@@ -204,11 +204,11 @@ class LyricsRepository(private val context: Context) {
 
     private fun cleanSearchTerm(term: String): String {
         return term
-                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
-                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
-                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
-                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
-                .replace(Regex("""\s*\([^)]*\)|\s*\[[^]]*\]"""), "")
+            .replace(Regex("""\((?:official|audio|video|lyric|lyrics|remastered|remaster|hd|4k|hq|visualizer|mv).*?\)""", RegexOption.IGNORE_CASE), "")
+            .replace(Regex("""\[(?:official|audio|video|lyric|lyrics|remastered|remaster|hd|4k|hq|visualizer|mv).*?\]""", RegexOption.IGNORE_CASE), "")
+            .replace(Regex("""feat\..*""", RegexOption.IGNORE_CASE), "")
+            .replace(Regex("""ft\..*""", RegexOption.IGNORE_CASE), "")
+            .replace(Regex("""\s+"""), " ")
             .trim()
     }
 
