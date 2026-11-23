@@ -63,6 +63,7 @@ import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material.icons.outlined.Bedtime
 import androidx.compose.material.icons.outlined.BluetoothAudio
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Collections
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Headphones
 import androidx.compose.material.icons.outlined.Lyrics
@@ -158,6 +159,7 @@ fun FullPlayerSheet(
     val scrollState = rememberScrollState()
 
     val currentLyrics by viewModel.currentLyrics.collectAsState()
+    val playerQueue by viewModel.queueState.collectAsState()
     val audioDeviceState by viewModel.audioDeviceState.collectAsState()
     val relatedTracks by viewModel.relatedTracks.collectAsState()
     val downloadProgress by viewModel.downloadProgress.collectAsState()
@@ -177,6 +179,7 @@ fun FullPlayerSheet(
     var showRelatedSheet by rememberSaveable { mutableStateOf(false) }
     var showCommentsSheet by rememberSaveable { mutableStateOf(false) }
     var showFullScreenLyrics by rememberSaveable { mutableStateOf(false) }
+    var showCollagePlayer by rememberSaveable { mutableStateOf(false) }
     var showTranslationInPreview by rememberSaveable { mutableStateOf(true) }
     var dragOffsetY by remember { mutableFloatStateOf(0f) }
     var lastDragDeltaY by remember { mutableFloatStateOf(0f) }
@@ -808,6 +811,14 @@ fun FullPlayerSheet(
                         )
                     }
 
+                    item(key = "pill_collage") {
+                        YtmActionPill(
+                            icon = Icons.Outlined.Collections,
+                            label = "Collage",
+                            onClick = { showCollagePlayer = true }
+                        )
+                    }
+
                     item(key = "pill_radio") {
                         YtmActionPill(
                             icon = Icons.Outlined.Radio,
@@ -1090,6 +1101,14 @@ fun FullPlayerSheet(
     if (showSettingsDialog) {
         SettingsDialog(
             onDismiss = { showSettingsDialog = false }
+        )
+    }
+
+    if (showCollagePlayer) {
+        CollagePlayerDialog(
+            currentTrack = track,
+            queue = playerQueue,
+            onDismiss = { showCollagePlayer = false }
         )
     }
 }
