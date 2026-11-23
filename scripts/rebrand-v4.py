@@ -16,7 +16,7 @@ def replace_text(value):
     value = value.replace("Heast Music", "Beast Music").replace("HEAST", "BEAST")
     return value
 
-for current, dirs, files in os.walk(ROOT, topdown=False):
+for current, dirs, files in os.walk(ROOT, topdown=True):
     current_path = Path(current)
     dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
     for filename in files:
@@ -28,16 +28,16 @@ for current, dirs, files in os.walk(ROOT, topdown=False):
                 original = path.read_text(encoding="utf-8")
                 updated = replace_text(original)
                 if path.name == "build.gradle.kts" and path.parent.name == "app":
-                    updated = re.sub(r'versionCode\\s*=\\s*\\d+', 'versionCode = 69', updated)
-                    updated = re.sub(r'versionName\\s*=\\s*"[^"]+"', 'versionName = "4.0.0"', updated)
-                    updated = re.sub(r'namespace\\s*=\\s*"[^"]+"', 'namespace = "com.xyrcodex.beast"', updated)
-                    updated = re.sub(r'applicationId\\s*=\\s*"[^"]+"', 'applicationId = "com.xyrcodex.beast"', updated)
+                    updated = re.sub(r'versionCode\s*=\s*\d+', 'versionCode = 69', updated)
+                    updated = re.sub(r'versionName\s*=\s*"[^"]+"', 'versionName = "4.0.0"', updated)
+                    updated = re.sub(r'namespace\s*=\s*"[^"]+"', 'namespace = "com.xyrcodex.beast"', updated)
+                    updated = re.sub(r'applicationId\s*=\s*"[^"]+"', 'applicationId = "com.xyrcodex.beast"', updated)
                 if path.name == "settings.gradle.kts":
-                    updated = re.sub(r'rootProject\\.name\\s*=\\s*"[^"]+"', 'rootProject.name = "Beast-Music"', updated)
+                    updated = re.sub(r'rootProject\.name\s*=\s*"[^"]+"', 'rootProject.name = "Beast-Music"', updated)
                 if path.name == "SettingsManager.kt":
                     updated = re.sub(
-                        r'private fun loadThemeMode\\(\\): ThemeMode \\{.*?\\n    \\}',
-                        'private fun loadThemeMode(): ThemeMode {\\n        val name = prefs.getString(KEY_THEME_MODE, ThemeMode.DARK.name) ?: ThemeMode.DARK.name\\n        return try {\\n            ThemeMode.valueOf(name)\\n        } catch (_: Exception) {\\n            ThemeMode.DARK\\n        }\\n    }',
+                        r'private fun loadThemeMode\(\): ThemeMode \{.*?\n    \}',
+                        'private fun loadThemeMode(): ThemeMode {\\n        val name = prefs.getString(KEY_THEME_MODE, ThemeMode.DARK.name) ?: ThemeMode.DARK.name\n        return try {\\n            ThemeMode.valueOf(name)\\n        } catch (_: Exception) {\\n            ThemeMode.DARK\n        }\\n    }',
                         updated,
                         count=1,
                         flags=re.DOTALL
@@ -99,6 +99,7 @@ This project is distributed under the GNU General Public License v3.0 (GPL-3.0).
 
 for current, dirs, files in os.walk(ROOT, topdown=False):
     current_path = Path(current)
+    dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
     if any(part in SKIP_DIRS for part in current_path.relative_to(ROOT).parts):
         continue
     for name in files:
