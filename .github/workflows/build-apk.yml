@@ -1,4 +1,4 @@
-name: Heast Music v4.0.1 Build
+name: Heast Music v4.0.2 Build
 
 on:
   push:
@@ -114,7 +114,8 @@ jobs:
           cat > RELEASE_NOTES.md <<EOF
           ## Heast Music v$VERSION_NAME
 
-          - Share cards with Poster and Lyrics templates, gallery saving and direct sharing.
+          - Collage Player editor with photo picker, selectable tracks, layouts, rotation and Heast watermark.
+          - Export collage posters to Pictures/Heast-Music.
           - GitHub update checker points to XyrexxArchive/heast-music releases.
           - Native YouTube Music search, playback, recommendations and synced lyrics.
           - UI, cache and playback stability improvements.
