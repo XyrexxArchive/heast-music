@@ -64,6 +64,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -153,12 +154,12 @@ fun CollagePlayerDialog(
                     Column(Modifier.align(Alignment.Center).padding(12.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                             selectedTracks.take(2).forEach { track ->
-                                CollagePreviewCard(track, rotation)
+                                CollagePreviewCard(track, rotation, Modifier.weight(1f))
                             }
                         }
                         if (selectedTracks.size > 2) {
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-                                selectedTracks.drop(2).take(4).forEach { track -> CollagePreviewCard(track, -rotation * 0.55f) }
+                                selectedTracks.drop(2).take(4).forEach { track -> CollagePreviewCard(track, -rotation * 0.55f, Modifier.weight(1f)) }
                             }
                         }
                     }
@@ -168,7 +169,7 @@ fun CollagePlayerDialog(
                 }
                 Text("Layout", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                 Row(horizontalArrangement = Arrangement.spacedBy(7.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
-                    CollageLayout.entries.forEach { option ->
+                    CollageLayout.values().forEach { option ->
                         FilterChip(selected = layout == option, onClick = { layout = option }, label = { Text("${option.label} · ${option.count}") })
                     }
                 }
@@ -248,9 +249,9 @@ fun CollagePlayerDialog(
 }
 
 @Composable
-private fun CollagePreviewCard(track: Track, angle: Float) {
+private fun CollagePreviewCard(track: Track, angle: Float, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.weight(1f).graphicsRotation(angle).clip(RoundedCornerShape(11.dp))
+        modifier = modifier.graphicsLayer { rotationZ = angle }.clip(RoundedCornerShape(11.dp))
             .background(Color(0xE8151B18)).border(1.dp, Color.White.copy(alpha = 0.18f), RoundedCornerShape(11.dp))
             .padding(7.dp)
     ) {
@@ -259,9 +260,6 @@ private fun CollagePreviewCard(track: Track, angle: Float) {
         Text(track.artist, color = Color.LightGray, maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 8.sp)
     }
 }
-
-private fun Modifier.graphicsRotation(degrees: Float): Modifier =
-    this.then(Modifier)
 
 private object CollageRenderer {
     private const val W = 1440
