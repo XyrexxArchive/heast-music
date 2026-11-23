@@ -22,9 +22,10 @@ Heast Music is a dark-first music player focused on fast navigation, clear typog
 
 ## Features
 
-- Music search, home recommendations and trending shelves
-- Streaming playback, queue controls and background playback
-- Synced lyrics and translation support
+- Native Kotlin YouTube Music backend ported from the Sonara backend flow
+- Music search, search suggestions, home recommendations, explore and trending shelves
+- Native stream resolution with Media3 playback, queue controls and background playback
+- Synced and plain lyrics through LRCLIB, plus the existing translation and disk-cache pipeline
 - Favorites, playlists, listening history and local recommendations
 - Offline downloads and home-screen playback widgets
 - Audio output detection, sleep timer and configurable quality
@@ -34,7 +35,8 @@ Heast Music is a dark-first music player focused on fast navigation, clear typog
 
 - Kotlin + Jetpack Compose
 - AndroidX Media3 / ExoPlayer
-- NewPipeExtractor
+- Native YouTube Music InnerTube client (Kotlin + OkHttp)
+- NewPipeExtractor for native audio stream extraction
 - Coroutines, StateFlow and Coil
 - Rust native core
 
@@ -67,14 +69,9 @@ APK output: `app/build/outputs/apk/`.
 
 ## GitHub Actions
 
-The workflow in `.github/workflows/build-apk.yml` builds the native core and Android APKs. Release signing uses these repository secrets: `HEAST_KEYSTORE_BASE64`, `HEAST_STORE_PASSWORD`, `HEAST_KEY_ALIAS` and `HEAST_KEY_PASSWORD`.
+The workflow in `.github/workflows/build-apk.yml` builds the Rust native core and Android APKs. It does not require repository secrets or a manually uploaded keystore. The release variant uses Android's automatically generated debug signing configuration so the APK can be installed directly.
 
-Generate the Base64 value from your release keystore:
-
-- Linux: `base64 -w 0 heast-release.jks`
-- macOS: `base64 heast-release.jks | tr -d '\n'`
-
-Save the output as `HEAST_KEYSTORE_BASE64`. Use the same keystore for future releases so users can install updates over previous versions.
+Because GitHub-hosted runners may generate a different debug certificate on a later run, Android can reject an update over an APK signed by a previous run. If that happens, uninstall the old Heast Music build before installing the new one. For stable in-place updates and Play Store distribution, use a persistent private release keystore.
 
 ## Credits
 
