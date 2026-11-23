@@ -251,8 +251,8 @@ class LyricsRepository(private val context: Context) {
                 clientVersion = "7.21.50"
             ) ?: return LyricsFetchResult.Error
 
-            val timedModel = findValueByKey(lyricsJson, "timedLyricsModel") as? JSONObject
-            val timedLines = timedModel?.optJSONArray("timedLyricsData")
+            val timedModel = findValueByKey(lyricsJson, "timedLyricsModel")
+            val timedLines = findValueByKey(timedModel, "timedLyricsData") as? org.json.JSONArray
             if (timedLines != null && timedLines.length() > 0) {
                 val parsed = buildList {
                     for (index in 0 until timedLines.length()) {
