@@ -258,11 +258,11 @@ private object ShareCardRenderer {
                 else -> 58f
             }
             paint.typeface = Typeface.create("sans-serif", Typeface.BOLD)
-            drawWrapped(canvas, track.title.trim(), 112f, 1140f, 850f, paint, 2)
+            drawWrapped(canvas, track.title.trim(), 112f, 1035f, 850f, paint, 2)
             paint.color = android.graphics.Color.rgb(190, 200, 193)
             paint.textSize = 34f
             paint.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
-            drawWrapped(canvas, track.artist, 112f, 1220f, 850f, paint, 1)
+            drawWrapped(canvas, track.artist, 112f, 1190f, 850f, paint, 1)
             paint.color = lime
             paint.textSize = 23f
             paint.typeface = Typeface.create("sans-serif", Typeface.BOLD)
