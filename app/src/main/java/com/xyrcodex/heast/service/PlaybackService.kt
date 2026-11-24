@@ -315,6 +315,7 @@ class PlaybackService : MediaSessionService() {
         const val ACTION_PLAY_CURRENT = "com.xyrcodex.heast.ACTION_PLAY_CURRENT"
         const val ACTION_NEXT = "com.xyrcodex.heast.ACTION_NEXT"
         const val ACTION_PREV = "com.xyrcodex.heast.ACTION_PREV"
+        const val ACTION_REFRESH_OVERLAY = "com.xyrcodex.heast.ACTION_REFRESH_OVERLAY"
         const val CUSTOM_ACTION_PLAY_CURRENT = "com.xyrcodex.heast.CUSTOM_ACTION_PLAY_CURRENT"
         const val CUSTOM_ACTION_FAVORITE = "com.xyrcodex.heast.CUSTOM_ACTION_FAVORITE"
         const val CUSTOM_ACTION_REPEAT = "com.xyrcodex.heast.CUSTOM_ACTION_REPEAT"
@@ -481,6 +482,10 @@ class PlaybackService : MediaSessionService() {
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 syncNotificationAndWidgets()
                 updatePauseTimeout(exoPlayer)
+            }
+
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                syncNotificationAndWidgets()
             }
 
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -1086,12 +1091,16 @@ class PlaybackService : MediaSessionService() {
             ACTION_PLAY_CURRENT -> PlayerQueueManager.currentTrack.value?.let { playTrack(it) }
             ACTION_NEXT -> player?.seekToNext()
             ACTION_PREV -> player?.seekToPrevious()
+            ACTION_REFRESH_OVERLAY -> syncNotificationAndWidgets()
         }
         return START_STICKY
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         val activePlayer = mediaSession?.player
+        if (activePlayer != null && activePlayer.playWhenReady && activePlayer.mediaItemCount > 0) {
+            FloatingPlayerOverlay.update(this, PlayerQueueManager.currentTrack.value, activePlayer)
+        }
         if (activePlayer == null || !activePlayer.playWhenReady || activePlayer.mediaItemCount == 0) {
             stopSelf()
         }
