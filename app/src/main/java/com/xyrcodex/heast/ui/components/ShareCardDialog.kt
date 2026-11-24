@@ -237,12 +237,38 @@ private object ShareCardRenderer {
                 }
             }
         } else {
-            paint.textSize = 58f
-            drawWrapped(canvas, track.title, 90f, 1070f, 900f, paint, 2)
-            paint.textSize = 38f
+            paint.shader = LinearGradient(0f, 0f, 0f, HEIGHT.toFloat(), intArrayOf(
+                android.graphics.Color.rgb(25, 53, 43),
+                android.graphics.Color.rgb(8, 12, 10),
+                android.graphics.Color.BLACK
+            ), null, Shader.TileMode.CLAMP)
+            canvas.drawRoundRect(RectF(54f, 54f, 1026f, 1296f), 54f, 54f, paint)
+            paint.shader = null
+            paint.color = lime
+            paint.textSize = 34f
+            paint.typeface = Typeface.create("sans-serif", Typeface.BOLD)
+            canvas.drawText("HEAST  /  MUSIC FOR YOUR MOMENT", 104f, 142f, paint)
+            paint.color = android.graphics.Color.argb(150, 255, 255, 255)
+            paint.style = Paint.Style.STROKE
+            paint.strokeWidth = 2f
+            canvas.drawRoundRect(RectF(100f, 190f, 980f, 1050f), 38f, 38f, paint)
+            paint.style = Paint.Style.FILL
+            paint.color = android.graphics.Color.WHITE
+            paint.textSize = when {
+                track.title.length > 58 -> 42f
+                track.title.length > 38 -> 48f
+                else -> 58f
+            }
+            paint.typeface = Typeface.create("sans-serif", Typeface.BOLD)
+            drawWrapped(canvas, track.title.trim(), 112f, 1140f, 850f, paint, 2)
+            paint.color = android.graphics.Color.rgb(190, 200, 193)
+            paint.textSize = 34f
             paint.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
-            paint.color = android.graphics.Color.LTGRAY
-            drawWrapped(canvas, track.artist, 90f, 1160f, 900f, paint, 1)
+            drawWrapped(canvas, track.artist, 112f, 1220f, 850f, paint, 1)
+            paint.color = lime
+            paint.textSize = 23f
+            paint.typeface = Typeface.create("sans-serif", Typeface.BOLD)
+            canvas.drawText("LISTEN  •  FEEL  •  REPEAT", 112f, 1270f, paint)
         }
         return bitmap
     }
