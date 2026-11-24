@@ -8,7 +8,7 @@
 
 A lightweight Android music player with an OLED-black interface, lime accents, Kotlin and Jetpack Compose.
 
-**Heast Music v4.0.4 · Developer · xyrcodex**
+**Heast Music v4.0.5 · Developer · xyrcodex**
 
 ![Android](https://img.shields.io/badge/Android-8.0%2B-111713?style=flat-square&logo=android&logoColor=BDF477)
 ![UI](https://img.shields.io/badge/UI-Jetpack%20Compose-111713?style=flat-square&logo=jetpackcompose&logoColor=BDF477)
@@ -29,7 +29,7 @@ Heast Music is a lightweight Android music player focused on music discovery, sm
 - Favorites, playlists and listening history
 - Offline downloads and playback controls
 - Home-screen widgets, media notifications and floating Dynamic Island player
-- Three-stage floating player: compact island, expanded controls and full app launch
+- Three-stage floating player with persistent background overlay, compact island, expanded controls and full app launch
 - Sleep timer and audio output selection
 - OLED-black theme with soft lime accents
 - Lightweight image loading and caching
