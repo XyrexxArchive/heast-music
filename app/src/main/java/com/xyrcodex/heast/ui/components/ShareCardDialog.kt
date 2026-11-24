@@ -190,7 +190,7 @@ private object ShareCardRenderer {
         canvas.drawRect(0f, 0f, WIDTH.toFloat(), HEIGHT.toFloat(), paint)
         paint.shader = null
 
-        val imageRect = if (lyricMode) RectF(80f, 90f, 330f, 340f) else RectF(110f, 130f, 970f, 990f)
+        val imageRect = if (lyricMode) RectF(80f, 90f, 330f, 340f) else RectF(120f, 190f, 960f, 950f)
         artwork?.let {
             val side = minOf(it.width, it.height)
             val cropped = Bitmap.createBitmap(it, (it.width-side)/2, (it.height-side)/2, side, side)
@@ -237,6 +237,8 @@ private object ShareCardRenderer {
                 }
             }
         } else {
+            paint.color = android.graphics.Color.rgb(12, 18, 15)
+            canvas.drawRoundRect(RectF(54f, 54f, 1026f, 1296f), 54f, 54f, paint)
             paint.shader = LinearGradient(0f, 0f, 0f, HEIGHT.toFloat(), intArrayOf(
                 android.graphics.Color.rgb(25, 53, 43),
                 android.graphics.Color.rgb(8, 12, 10),
