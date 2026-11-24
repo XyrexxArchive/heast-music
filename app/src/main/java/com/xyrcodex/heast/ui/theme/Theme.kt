@@ -6,7 +6,7 @@ import android.os.Build
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -34,8 +34,16 @@ object HeastMotion {
 
     val is64BitDevice: Boolean = Build.SUPPORTED_64_BIT_ABIS.isNotEmpty()
 
+    private val isMotionBlurCapable: Boolean = is64BitDevice && (
+        try {
+            Runtime.getRuntime().maxMemory() >= 192L * 1024L * 1024L
+        } catch (_: Throwable) {
+            true
+        }
+    )
+
     private val cachedBlurSteps: Array<androidx.compose.ui.graphics.RenderEffect?> by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isMotionBlurCapable) {
             val scale = if (is64BitDevice) 1.0f else 0.75f
             arrayOf(
                 null,
