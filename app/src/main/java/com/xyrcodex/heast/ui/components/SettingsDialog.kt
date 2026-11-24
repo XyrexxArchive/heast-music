@@ -86,6 +86,8 @@ import com.xyrcodex.heast.data.settings.AudioSubQuality
 import com.xyrcodex.heast.data.settings.LyricsLanguage
 import com.xyrcodex.heast.data.settings.SettingsManager
 import com.xyrcodex.heast.data.settings.ThemeMode
+import com.xyrcodex.heast.service.FloatingPlayerOverlay
+import com.xyrcodex.heast.service.PlaybackService
 import com.xyrcodex.heast.data.update.UpdateInfo
 import com.xyrcodex.heast.data.update.UpdateManager
 import com.xyrcodex.heast.ui.theme.HeastAppTheme
@@ -133,6 +135,30 @@ fun SettingsDialog(
     var isCheckingUpdate by remember { mutableStateOf(false) }
     var updateStatusMessage by remember { mutableStateOf<String?>(null) }
     var foundUpdateInfo by remember { mutableStateOf<UpdateInfo?>(null) }
+    var dynamicIslandEnabled by remember { mutableStateOf(FloatingPlayerOverlay.isEnabled(context)) }
+    var overlayPermissionGranted by remember { mutableStateOf(Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(context)) }
+
+    val overlayPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        overlayPermissionGranted = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(context)
+        if (overlayPermissionGranted) {
+            dynamicIslandEnabled = true
+            FloatingPlayerOverlay.setEnabled(context, true)
+            runCatching { context.startService(Intent(context, PlaybackService::class.java).setAction(PlaybackService.ACTION_REFRESH_OVERLAY)) }
+            Toast.makeText(context, "Dynamic Island aktif. Putar musik lalu keluar dari Heast.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun setDynamicIslandEnabled(enabled: Boolean) {
+        if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
+            val permissionIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.packageName))
+            overlayPermissionLauncher.launch(permissionIntent)
+            return
+        }
+        dynamicIslandEnabled = enabled
+        FloatingPlayerOverlay.setEnabled(context, enabled)
+        runCatching { context.startService(Intent(context, PlaybackService::class.java).setAction(PlaybackService.ACTION_REFRESH_OVERLAY)) }
+        Toast.makeText(context, if (enabled) "Dynamic Island diaktifkan" else "Dynamic Island dinonaktifkan", Toast.LENGTH_SHORT).show()
+    }
 
     var showAudioQualityPicker by remember { mutableStateOf(false) }
     var showDownloadQualityPicker by remember { mutableStateOf(false) }
@@ -218,13 +244,31 @@ fun SettingsDialog(
                         SettingsActionRow(
                             icon = Icons.Outlined.GraphicEq,
                             title = "Dynamic Island",
-                            subtitle = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) "Aktif · tampil di atas aplikasi lain" else "Izinkan tampil di atas aplikasi lain",
+                            subtitle = when {
+                                !overlayPermissionGranted -> "Izin overlay belum diberikan · ketuk untuk mengaktifkan"
+                                dynamicIslandEnabled -> "Aktif · tetap tampil di luar aplikasi saat musik diputar"
+                                else -> "Nonaktif · ketuk untuk mengaktifkan floating player"
+                            },
+                            onClick = { setDynamicIslandEnabled(!dynamicIslandEnabled || !overlayPermissionGranted) },
+                            trailing = {
+                                Switch(
+                                    checked = dynamicIslandEnabled && overlayPermissionGranted,
+                                    onCheckedChange = { setDynamicIslandEnabled(it) }
+                                )
+                            }
+                        )
+                        SettingsRowDivider()
+                        SettingsActionRow(
+                            icon = Icons.Outlined.GraphicEq,
+                            title = "Uji Dynamic Island",
+                            subtitle = "Perbarui floating player untuk lagu yang sedang diputar",
                             onClick = {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
-                                    runCatching {
-                                        context.startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.packageName)))
-                                    }
-                                } else Toast.makeText(context, "Floating Player siap saat musik diputar", Toast.LENGTH_SHORT).show()
+                                    setDynamicIslandEnabled(true)
+                                } else {
+                                    runCatching { context.startService(Intent(context, PlaybackService::class.java).setAction(PlaybackService.ACTION_REFRESH_OVERLAY)) }
+                                    Toast.makeText(context, "Kontrol floating akan muncul jika musik sedang diputar", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         )
                     }
