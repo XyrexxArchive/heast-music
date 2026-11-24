@@ -45,10 +45,20 @@ internal object FloatingPlayerOverlay {
     private var startY = 0
     private var moved = false
 
+    private const val PREFS_NAME = "heast_floating_player"
+    private const val KEY_ENABLED = "dynamic_island_enabled"
+
+    fun isEnabled(context: Context): Boolean = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(KEY_ENABLED, true)
+
+    fun setEnabled(context: Context, enabled: Boolean) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putBoolean(KEY_ENABLED, enabled).apply()
+        if (!enabled) hide()
+    }
+
     private val ticker = object : Runnable {
         override fun run() {
             val active = player
-            if (active == null || !active.isPlaying) {
+            if (active == null || !active.playWhenReady || active.playbackState == Player.STATE_IDLE) {
                 hide()
                 return
             }
@@ -63,7 +73,7 @@ internal object FloatingPlayerOverlay {
     }
 
     fun update(context: Context, track: Track?, activePlayer: Player) {
-        if (Build.VERSION.SDK_INT < 23 || !Settings.canDrawOverlays(context) || track == null || !activePlayer.isPlaying) {
+        if (Build.VERSION.SDK_INT < 23 || !isEnabled(context) || !Settings.canDrawOverlays(context) || track == null || !activePlayer.playWhenReady || activePlayer.playbackState == Player.STATE_IDLE) {
             hide()
             return
         }
@@ -162,8 +172,12 @@ internal object FloatingPlayerOverlay {
         root.addView(column)
 
         root.setOnClickListener {
-            if (stage == 0) stage = 1 else openApp(context)
-            render()
+            if (stage == 0) {
+                stage = 1
+                render()
+            } else {
+                openApp(context)
+            }
         }
         runCatching { manager?.addView(root, params) }.onFailure { hide() }
         render()
