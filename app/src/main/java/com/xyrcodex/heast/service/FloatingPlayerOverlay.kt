@@ -100,7 +100,7 @@ internal object FloatingPlayerOverlay {
         layout = params
         val column = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(context, 10))
+            setPadding(dp(context, 10), dp(context, 10), dp(context, 10), dp(context, 10))
         }
         val head = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -161,37 +161,9 @@ internal object FloatingPlayerOverlay {
         column.addView(buttons, LinearLayout.LayoutParams(-1, dp(context, 34)))
         root.addView(column)
 
-        root.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    downX = event.rawX
-                    downY = event.rawY
-                    startX = params.x
-                    startY = params.y
-                    moved = false
-                    true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val dx = (event.rawX - downX).toInt()
-                    val dy = (event.rawY - downY).toInt()
-                    if (abs(dx) > dp(context, 7) || abs(dy) > dp(context, 7)) moved = true
-                    if (moved) {
-                        params.gravity = Gravity.TOP or Gravity.START
-                        params.x = startX + dx
-                        params.y = startY + dy
-                        runCatching { manager?.updateViewLayout(root, params) }
-                    }
-                    true
-                }
-                MotionEvent.ACTION_UP -> {
-                    if (!moved) {
-                        if (stage == 0) stage = 1 else openApp(context)
-                        render()
-                    }
-                    true
-                }
-                else -> true
-            }
+        root.setOnClickListener {
+            if (stage == 0) stage = 1 else openApp(context)
+            render()
         }
         runCatching { manager?.addView(root, params) }.onFailure { hide() }
         render()
@@ -237,6 +209,8 @@ internal object FloatingPlayerOverlay {
         }
         runCatching { context.startActivity(intent) }
     }
+
+    fun hide(context: Context) { hide() }
 
     private fun hide() {
         handler.removeCallbacks(ticker)
