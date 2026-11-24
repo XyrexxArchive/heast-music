@@ -237,15 +237,11 @@ private object ShareCardRenderer {
                 }
             }
         } else {
-            paint.color = android.graphics.Color.rgb(12, 18, 15)
-            canvas.drawRoundRect(RectF(54f, 54f, 1026f, 1296f), 54f, 54f, paint)
-            paint.shader = LinearGradient(0f, 0f, 0f, HEIGHT.toFloat(), intArrayOf(
-                android.graphics.Color.rgb(25, 53, 43),
-                android.graphics.Color.rgb(8, 12, 10),
-                android.graphics.Color.BLACK
-            ), null, Shader.TileMode.CLAMP)
-            canvas.drawRoundRect(RectF(54f, 54f, 1026f, 1296f), 54f, 54f, paint)
-            paint.shader = null
+            paint.color = android.graphics.Color.argb(180, 190, 245, 112)
+            paint.style = Paint.Style.STROKE
+            paint.strokeWidth = 2f
+            canvas.drawRoundRect(RectF(100f, 170f, 980f, 970f), 38f, 38f, paint)
+            paint.style = Paint.Style.FILL
             paint.color = lime
             paint.textSize = 34f
             paint.typeface = Typeface.create("sans-serif", Typeface.BOLD)
