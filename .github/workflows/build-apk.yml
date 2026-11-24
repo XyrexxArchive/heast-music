@@ -1,4 +1,4 @@
-name: Heast Music v4.0.3 Build
+name: Heast Music v4.0.4 Build
 
 on:
   push:
@@ -114,7 +114,8 @@ jobs:
           cat > RELEASE_NOTES.md <<EOF
           ## Heast Music v$VERSION_NAME
 
-          - Dynamic Island-style in-app playback pill with quick controls.
+          - Floating Dynamic Island player outside the app with three interaction stages.
+          - Redesigned poster share card with cleaner typography.
           - Synced Lyrics UI and playback-following highlight.
           - Collage Player up to five tracks, background position/blur and playback controls.
           - Export collage posters to Pictures/Heast-Music.
