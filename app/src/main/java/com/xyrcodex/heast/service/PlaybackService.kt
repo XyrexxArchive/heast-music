@@ -758,6 +758,7 @@ class PlaybackService : MediaSessionService() {
     private fun syncNotificationAndWidgets() {
         val activePlayer = player ?: return
         updateNotificationCustomLayout()
+        FloatingPlayerOverlay.update(this@PlaybackService, PlayerQueueManager.currentTrack.value, activePlayer)
         persist(this@PlaybackService, activePlayer)
         serviceScope.launch(Dispatchers.IO) {
             updateHeastWidgets(this@PlaybackService)
@@ -1097,6 +1098,7 @@ class PlaybackService : MediaSessionService() {
     }
 
     override fun onDestroy() {
+        FloatingPlayerOverlay.hide(this)
         try {
             unregisterReceiver(favSyncReceiver)
         } catch (_: Exception) {}
