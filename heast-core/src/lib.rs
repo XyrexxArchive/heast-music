@@ -8,7 +8,7 @@ use jni::objects::{JClass, JString};
 use jni::sys::jstring;
 use jni::JNIEnv;
 
-/** JNI bridge matching package: com.ayashii.kuro.data.native.KuroNativeCore */
+/** JNI bridge matching package: com.xyrcodex.heast.data.native.HeastNativeCore */
 
 fn clear_pending_exception(env: &mut JNIEnv) {
     if env.exception_check().unwrap_or(false) {
@@ -31,7 +31,7 @@ fn to_jstring(env: &mut JNIEnv, s: &str) -> jstring {
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_cleanTrackTitle(
+pub extern "system" fn Java_com_xyrcodex_heast_data_native_HeastNativeCore_cleanTrackTitle(
     mut env: JNIEnv,
     _class: JClass,
     raw_title: JString,
@@ -46,7 +46,7 @@ pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_cleanTra
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_rankCandidates(
+pub extern "system" fn Java_com_xyrcodex_heast_data_native_HeastNativeCore_rankCandidates(
     mut env: JNIEnv,
     _class: JClass,
     candidates_json: JString,
@@ -73,12 +73,12 @@ pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_rankCand
     };
 
     let ranked = recommendation::rank_candidates(candidates, &profile);
-    let output = serde_json::to_string(&ranked).unwrap_or_else(|_| "[]".to_string());
+    let output = serde_json::to_string(&ranked).unwrap_or_else(|| "[]".to_string());
     to_jstring(&mut env, &output)
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseAutomixTracks(
+pub extern "system" fn Java_com_xyrcodex_heast_data_native_HeastNativeCore_parseAutomixTracks(
     mut env: JNIEnv,
     _class: JClass,
     raw_json: JString,
@@ -95,12 +95,12 @@ pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseAut
     };
 
     let tracks = innertube::parse_automix_radio(&json_str, &video_id_str);
-    let output = serde_json::to_string(&tracks).unwrap_or_else(|_| "[]".to_string());
+    let output = serde_json::to_string(&tracks).unwrap_or_else(|| "[]".to_string());
     to_jstring(&mut env, &output)
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_buildDeepLPayload(
+pub extern "system" fn Java_com_xyrcodex_heast_data_native_HeastNativeCore_buildDeepLPayload(
     mut env: JNIEnv,
     _class: JClass,
     lines_json: JString,
@@ -126,7 +126,7 @@ pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_buildDee
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseDeepLTranslations(
+pub extern "system" fn Java_com_xyrcodex_heast_data_native_HeastNativeCore_parseDeepLTranslations(
     mut env: JNIEnv,
     _class: JClass,
     response_json: JString,
@@ -137,12 +137,12 @@ pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseDee
     };
 
     let translations = translator::parse_response(&resp_str);
-    let output = serde_json::to_string(&translations).unwrap_or_else(|_| "[]".to_string());
+    let output = serde_json::to_string(&translations).unwrap_or_else(|| "[]".to_string());
     to_jstring(&mut env, &output)
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseLiriqoLyrics(
+pub extern "system" fn Java_com_xyrcodex_heast_data_native_HeastNativeCore_parseLiriqoLyrics(
     mut env: JNIEnv,
     _class: JClass,
     raw_json: JString,
@@ -162,7 +162,7 @@ pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseLir
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseAutomixTracksPacked(
+pub extern "system" fn Java_com_xyrcodex_heast_data_native_HeastNativeCore_parseAutomixTracksPacked(
     mut env: JNIEnv,
     _class: JClass,
     raw_json: JString,
@@ -184,7 +184,7 @@ pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseAut
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseYtmSearchPacked(
+pub extern "system" fn Java_com_xyrcodex_heast_data_native_HeastNativeCore_parseYtmSearchPacked(
     mut env: JNIEnv,
     _class: JClass,
     raw_json: JString,
@@ -200,7 +200,7 @@ pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseYtm
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_ayashii_kuro_data_native_KuroNativeCore_parseLiriqoLyricsPacked(
+pub extern "system" fn Java_com_xyrcodex_heast_data_native_HeastNativeCore_parseLiriqoLyricsPacked(
     mut env: JNIEnv,
     _class: JClass,
     raw_json: JString,
