@@ -1,4 +1,4 @@
-name: Heast Music v4.0.4 Build
+name: Heast Music v4.0.5 Build
 
 on:
   push:
@@ -114,7 +114,8 @@ jobs:
           cat > RELEASE_NOTES.md <<EOF
           ## Heast Music v$VERSION_NAME
 
-          - Floating Dynamic Island player outside the app with three interaction stages.
+          - Persistent floating Dynamic Island overlay with functional enable/disable and test controls in Settings.
+          - Floating player remains visible while playback continues after leaving the app.
           - Redesigned poster share card with cleaner typography.
           - Synced Lyrics UI and playback-following highlight.
           - Collage Player up to five tracks, background position/blur and playback controls.
