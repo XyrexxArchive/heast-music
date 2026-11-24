@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -211,6 +212,23 @@ fun SettingsDialog(
                         .padding(horizontal = 16.dp)
                         .padding(bottom = 28.dp)
                 ) {
+                    SettingsSectionHeader(text = "Floating Player")
+                    SettingsGroupCard {
+                        SettingsActionRow(
+                            icon = Icons.Outlined.GraphicEq,
+                            title = "Dynamic Island",
+                            subtitle = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) "Aktif · tampil di atas aplikasi lain" else "Izinkan tampil di atas aplikasi lain",
+                            onClick = {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
+                                    runCatching {
+                                        context.startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.packageName)))
+                                    }
+                                } else Toast.makeText(context, "Floating Player siap saat musik diputar", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+
                     SettingsSectionHeader(text = stringResource(R.string.settings_section_audio_offline))
                     SettingsGroupCard {
                         SettingsActionRow(
