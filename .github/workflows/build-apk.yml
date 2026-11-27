@@ -1,4 +1,4 @@
-name: Heast Music v4.0.5 Build
+name: Heast Music Build & Release
 
 on:
   push:
@@ -114,18 +114,17 @@ jobs:
           cat > RELEASE_NOTES.md <<EOF
           ## Heast Music v$VERSION_NAME
 
-          - Persistent floating Dynamic Island overlay with functional enable/disable and test controls in Settings.
-          - Floating player remains visible while playback continues after leaving the app.
-          - Redesigned poster share card with cleaner typography.
-          - Synced Lyrics UI and playback-following highlight.
-          - Collage Player up to five tracks, background position/blur and playback controls.
-          - Export collage posters to Pictures/Heast-Music.
-          - GitHub update checker points to XyrexxArchive/heast-music releases.
-          - Native YouTube Music search, playback, recommendations and synced lyrics.
-          - UI, cache and playback stability improvements.
+          - Full midnight liquid-glass visual refresh with cool navy surfaces and icy-blue accents.
+          - Floating translucent bottom navigation dock with fluid selection feedback.
+          - Refined mini-player, cards and shared surface styling.
+          - Three-size Dynamic Island: compact, expanded and large, with animated resizing and tap-to-open player.
+          - Settings explains the Dynamic Island interaction and retains functional permission, enable/disable and test actions.
+          - Existing music search, playback, queue, lyrics, favorites, playlists, downloads and account flows are preserved.
+          - Lightweight image loading and cache behavior remain in place.
+          - Release, arm64, arm32 and debug APKs are built and attached automatically.
           - Release APK signed automatically with the Android debug signing configuration.
           - No repository signing secrets are required.
-          
+
           **Install note:** automatic debug signing avoids manual keystore setup. If the signing certificate changes between builds, uninstall the previous APK before installing the new one.
           EOF
 
