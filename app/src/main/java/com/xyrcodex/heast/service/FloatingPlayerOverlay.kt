@@ -172,12 +172,12 @@ internal object FloatingPlayerOverlay {
         root.addView(column)
 
         root.setOnClickListener {
-            if (stage == 0) {
-                stage = 1
-                render()
-            } else {
-                openApp(context)
+            when (stage) {
+                0 -> stage = 1
+                1 -> stage = 2
+                else -> openApp(context)
             }
+            render()
         }
         runCatching { manager?.addView(root, params) }.onFailure { hide() }
         render()
@@ -190,29 +190,45 @@ internal object FloatingPlayerOverlay {
         root.animate().cancel()
         root.scaleX = 0.96f
         root.scaleY = 0.96f
-        root.animate().scaleX(1f).scaleY(1f).setDuration(220L).start()
-        if (stage == 0) {
-            params.width = dp(context, 252)
-            params.height = dp(context, 66)
-            seek?.visibility = View.GONE
-            controls?.visibility = View.GONE
-            art?.let { image ->
-                (image.layoutParams as? LinearLayout.LayoutParams)?.let {
-                    it.width = dp(context, 44)
-                    it.height = dp(context, 44)
-                    image.layoutParams = it
+        root.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(260L).setInterpolator(android.view.animation.DecelerateInterpolator()).start()
+        when (stage) {
+            0 -> {
+                params.width = dp(context, 252)
+                params.height = dp(context, 66)
+                seek?.visibility = View.GONE
+                controls?.visibility = View.GONE
+                art?.let { image ->
+                    (image.layoutParams as? LinearLayout.LayoutParams)?.let {
+                        it.width = dp(context, 44)
+                        it.height = dp(context, 44)
+                        image.layoutParams = it
+                    }
                 }
             }
-        } else {
-            params.width = dp(context, 344)
-            params.height = dp(context, 150)
-            seek?.visibility = View.VISIBLE
-            controls?.visibility = View.VISIBLE
-            art?.let { image ->
-                (image.layoutParams as? LinearLayout.LayoutParams)?.let {
-                    it.width = dp(context, 48)
-                    it.height = dp(context, 48)
-                    image.layoutParams = it
+            1 -> {
+                params.width = dp(context, 344).coerceAtMost(context.resources.displayMetrics.widthPixels - dp(context, 24))
+                params.height = dp(context, 150)
+                seek?.visibility = View.VISIBLE
+                controls?.visibility = View.VISIBLE
+                art?.let { image ->
+                    (image.layoutParams as? LinearLayout.LayoutParams)?.let {
+                        it.width = dp(context, 48)
+                        it.height = dp(context, 48)
+                        image.layoutParams = it
+                    }
+                }
+            }
+            else -> {
+                params.width = context.resources.displayMetrics.widthPixels - dp(context, 28)
+                params.height = dp(context, 218)
+                seek?.visibility = View.VISIBLE
+                controls?.visibility = View.VISIBLE
+                art?.let { image ->
+                    (image.layoutParams as? LinearLayout.LayoutParams)?.let {
+                        it.width = dp(context, 68)
+                        it.height = dp(context, 68)
+                        image.layoutParams = it
+                    }
                 }
             }
         }
