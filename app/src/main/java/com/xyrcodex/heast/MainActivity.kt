@@ -248,19 +248,33 @@ fun MainAppScreen(viewModel: MusicViewModel, onPageChanged: (Int) -> Unit = {}) 
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(colors.background)
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(colors.background.copy(alpha = 0.90f), colors.background)
+                            )
+                        )
+                        .padding(horizontal = 12.dp, vertical = 7.dp)
+                        .navigationBarsPadding()
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(colors.border.copy(alpha = 0.72f))
-                    )
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .navigationBarsPadding()
-                            .height(58.dp)
+                            .height(62.dp)
+                            .clip(RoundedCornerShape(26.dp))
+                            .background(
+                                Brush.linearGradient(
+                                    if (colors.isDark) listOf(
+                                        Color(0xD927354A),
+                                        Color(0xE8101725),
+                                        Color(0xD91B293D)
+                                    ) else listOf(
+                                        Color(0xF5FFFFFF),
+                                        Color(0xE8EAF1FA),
+                                        Color(0xF5FFFFFF)
+                                    )
+                                )
+                            )
+                            .border(1.dp, colors.border.copy(alpha = 0.82f), RoundedCornerShape(26.dp))
                             .pointerInput(pagerState.currentPage) {
                                 detectHorizontalDragGestures(
                                     onDragStart = { navSwipeOffsetX = 0f },
@@ -282,7 +296,7 @@ fun MainAppScreen(viewModel: MusicViewModel, onPageChanged: (Int) -> Unit = {}) 
                                     }
                                 )
                             }
-                            .padding(horizontal = 4.dp),
+                            .padding(horizontal = 5.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -311,14 +325,17 @@ fun MainAppScreen(viewModel: MusicViewModel, onPageChanged: (Int) -> Unit = {}) 
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(12.dp))
-                                        .background(if (selected) colors.accent else Color.Transparent)
+                                        .background(
+                                            if (selected) Brush.linearGradient(listOf(Color(0xFFB9DCFF), Color(0xFF79AEEB))) else Brush.linearGradient(listOf(Color.Transparent, Color.Transparent))
+                                        )
+                                        .border(if (selected) 1.dp else 0.dp, if (selected) Color.White.copy(alpha = 0.35f) else Color.Transparent, RoundedCornerShape(12.dp))
                                         .padding(horizontal = 15.dp, vertical = 5.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
                                         imageVector = screen.icon,
                                         contentDescription = stringResource(screen.titleRes),
-                                        tint = if (selected) colors.background else colors.textMuted,
+                                        tint = if (selected) Color(0xFF10223A) else colors.textMuted,
                                         modifier = Modifier.size(20.dp).graphicsLayer { alpha = itemAlpha }
                                     )
                                 }
@@ -327,7 +344,7 @@ fun MainAppScreen(viewModel: MusicViewModel, onPageChanged: (Int) -> Unit = {}) 
                                     text = stringResource(screen.titleRes),
                                     fontSize = 11.sp,
                                     fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                                    color = if (selected) colors.accent else colors.textMuted,
+                                    color = if (selected) colors.textPrimary else colors.textMuted,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier.graphicsLayer {
