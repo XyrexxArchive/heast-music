@@ -12,6 +12,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -44,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -103,7 +105,8 @@ fun MiniPlayer(
         label = "mini_swipe_offset_y"
     )
 
-    val solidContainerColor = if (colors.isDark) Color(0xFF151B16) else Color(0xFFF6F6F6)
+    val glassBrush = if (colors.isDark) Brush.linearGradient(listOf(Color(0xE61B2638), Color(0xD90D1422), Color(0xE61A2130))) else Brush.linearGradient(listOf(Color(0xF7FFFFFF), Color(0xF0EEF3FA)))
+    val glassStroke = if (colors.isDark) Color.White.copy(alpha = 0.13f) else Color.Black.copy(alpha = 0.08f)
 
     Column(
         modifier = modifier
@@ -112,8 +115,9 @@ fun MiniPlayer(
                 translationY = (animatedOffsetY * 0.35f).coerceIn(-28f, 20f)
             }
             .padding(horizontal = 10.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(solidContainerColor)
+            .clip(RoundedCornerShape(22.dp))
+            .background(glassBrush)
+            .border(1.dp, glassStroke, RoundedCornerShape(22.dp))
             .clickable { onClick() }
             .pointerInput(track.id, isPlaying) {
                 detectDragGestures(
@@ -193,7 +197,7 @@ fun MiniPlayer(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(0.8.dp)
-                .background(colors.border.copy(alpha = 0.8f))
+                .background(colors.border.copy(alpha = 0.34f))
         )
 
         Row(
