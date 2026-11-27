@@ -6,9 +6,9 @@
 
 **Music for your moment.**
 
-A lightweight Android music player with an OLED-black interface, lime accents, Kotlin and Jetpack Compose.
+A lightweight Android music player with a midnight liquid-glass interface, icy-blue accents, Kotlin and Jetpack Compose.
 
-**Heast Music v4.0.5 · Developer · xyrcodex**
+**Heast Music v4.0.7 · Developer · xyrcodex**
 
 ![Android](https://img.shields.io/badge/Android-8.0%2B-111713?style=flat-square&logo=android&logoColor=BDF477)
 ![UI](https://img.shields.io/badge/UI-Jetpack%20Compose-111713?style=flat-square&logo=jetpackcompose&logoColor=BDF477)
@@ -29,9 +29,9 @@ Heast Music is a lightweight Android music player focused on music discovery, sm
 - Favorites, playlists and listening history
 - Offline downloads and playback controls
 - Home-screen widgets, media notifications and floating Dynamic Island player
-- Three-stage floating player with persistent background overlay, compact island, expanded controls and full app launch
+- Three-stage floating Dynamic Island with compact, expanded and large modes, spring-like resizing and app launch
 - Sleep timer and audio output selection
-- OLED-black theme with soft lime accents
+- Midnight liquid-glass theme with translucent surfaces, cool navy depth and icy-blue accents
 - Lightweight image loading and caching
 
 - Redesigned poster and lyrics share-card templates with gallery export to Pictures/Heast-Music.
@@ -51,3 +51,11 @@ Kotlin, Jetpack Compose, AndroidX Media3, OkHttp, NewPipeExtractor, Coil, Corout
 ## License
 
 GNU General Public License v3.0 (GPL-3.0).
+
+## v4.0.7
+
+- Complete visual refresh with a midnight liquid-glass palette and icy-blue accent system.
+- Floating glass bottom navigation dock with animated selection feedback.
+- Refined mini-player surface and consistent glass card styling across the app.
+- Dynamic Island now cycles through compact, expanded and large layouts before opening the full player.
+- Preserved existing search, playback, queue, lyrics, library, offline and account flows.
