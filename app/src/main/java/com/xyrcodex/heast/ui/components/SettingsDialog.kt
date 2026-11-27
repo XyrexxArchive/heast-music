@@ -246,7 +246,7 @@ fun SettingsDialog(
                             title = "Dynamic Island",
                             subtitle = when {
                                 !overlayPermissionGranted -> "Izin overlay belum diberikan · ketuk untuk mengaktifkan"
-                                dynamicIslandEnabled -> "Aktif · tetap tampil di luar aplikasi saat musik diputar"
+                                dynamicIslandEnabled -> "Aktif · ketuk pulau untuk compact, expanded, large, lalu buka aplikasi"
                                 else -> "Nonaktif · ketuk untuk mengaktifkan floating player"
                             },
                             onClick = { setDynamicIslandEnabled(!dynamicIslandEnabled || !overlayPermissionGranted) },
