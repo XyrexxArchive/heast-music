@@ -93,7 +93,7 @@ internal object FloatingPlayerOverlay {
         manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         trackId = track.id
         val root = FrameLayout(context).apply {
-            background = shape(Color.rgb(5, 7, 6), 32f, Color.rgb(58, 68, 61))
+            background = glassShape(32f)
             elevation = dp(context, 16).toFloat()
         }
         container = root
@@ -187,6 +187,10 @@ internal object FloatingPlayerOverlay {
         val root = container ?: return
         val params = layout ?: return
         val context = root.context
+        root.animate().cancel()
+        root.scaleX = 0.96f
+        root.scaleY = 0.96f
+        root.animate().scaleX(1f).scaleY(1f).setDuration(220L).start()
         if (stage == 0) {
             params.width = dp(context, 252)
             params.height = dp(context, 66)
@@ -262,6 +266,14 @@ internal object FloatingPlayerOverlay {
             setOnClickListener { click() }
             layoutParams = LinearLayout.LayoutParams(dp(context, 68), dp(context, 34))
         }
+
+    private fun glassShape(radius: Float) = GradientDrawable(
+        GradientDrawable.Orientation.TL_BR,
+        intArrayOf(Color.rgb(35, 47, 68), Color.rgb(13, 19, 31), Color.rgb(27, 36, 54))
+    ).apply {
+        cornerRadius = radius
+        setStroke(dpSafe(1), Color.argb(92, 225, 238, 255))
+    }
 
     private fun shape(color: Int, radius: Float, border: Int? = null) =
         GradientDrawable().apply {
