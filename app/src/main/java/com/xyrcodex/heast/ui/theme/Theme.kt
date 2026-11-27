@@ -138,11 +138,11 @@ val LightHeastColors = HeastColors(
     card = Color(0xFFF4F4F5),
     border = Color(0xFFE4E4E7),
     textPrimary = Color(0xFF09090B),
-    textSecondary = Color(0xFF71717A),
-    textMuted = Color(0xFFA1A1AA),
+    textSecondary = Color(0xFF63738A),
+    textMuted = Color(0xFF8796AA),
     iconPrimary = Color(0xFF09090B),
     isDark = false,
-    accent = Color(0xFF09090B)
+    accent = Color(0xFF477FB8)
 )
 
 val LocalHeastColors = staticCompositionLocalOf { DarkHeastColors }
@@ -172,13 +172,13 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = PureWhite,
     secondary = Color(0xFF27272A),
     onSecondary = PureWhite,
-    background = Color(0xFFFFFFFF),
-    onBackground = Color(0xFF09090B),
-    surface = Color(0xFFFAFAFA),
-    onSurface = Color(0xFF09090B),
-    surfaceVariant = Color(0xFFF4F4F5),
-    onSurfaceVariant = Color(0xFF71717A),
-    outline = Color(0xFFE4E4E7)
+    background = Color(0xFFF5F8FD),
+    onBackground = Color(0xFF152033),
+    surface = Color(0xFFF0F5FB),
+    onSurface = Color(0xFF152033),
+    surfaceVariant = Color(0xFFE7EEF7),
+    onSurfaceVariant = Color(0xFF63738A),
+    outline = Color(0xFFD1DDEB)
 )
 
 @Composable
